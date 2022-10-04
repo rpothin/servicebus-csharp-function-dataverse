@@ -1,6 +1,6 @@
 <p align="center">
     <h1 align="center">
-        Azure Developer CLI Template - servicebus-csharp-function-dataverse
+        Azure Developer CLI Template - rpothin/servicebus-csharp-function-dataverse
     </h1>
     <h3 align="center">
         Application to process messages from an Azure Service Bus to a Dataverse environment through a C# Azure Functions app using the Microsoft.PowerPlatform.Dataverse.Client package.
