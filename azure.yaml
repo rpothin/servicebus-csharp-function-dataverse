@@ -1,0 +1,8 @@
+name: csharp-dataverse-service-bus
+metadata:
+  template: csharp-dataverse-service-bus@0.0.1-beta
+services:
+  app:
+    project: src/functionapp
+    language: csharp
+    host: function
