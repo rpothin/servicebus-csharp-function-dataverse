@@ -133,24 +133,6 @@ If you want to participate to this project, but you are not sure how you can do 
 - By email at **raphael.pothin@gmail.com**
 - On [Twitter](https://twitter.com/RaphaelPothin)
 
-### Contributors
-
-Thanks to the following people who have contributed to this project:
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a href="https://medium.com/rapha%C3%ABl-pothin"><img src="https://avatars0.githubusercontent.com/u/23240245?v=4" width="100px;" alt=""/><br /><sub><b>Raphael Pothin</b></sub></a><br /><a href="#ideas-rpothin" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/rpothin/servicebus-csharp-function-dataverse/commits?author=rpothin" title="Code">💻</a> <a href="#content-rpothin" title="Content">🖋</a> <a href="https://github.com/rpothin/servicebus-csharp-function-dataverse/commits?author=rpothin" title="Documentation">📖</a> <a href="#maintenance-rpothin" title="Maintenance">🚧</a> <a href="#projectManagement-rpothin" title="Project Management">📆</a> <a href="https://github.com/rpothin/servicebus-csharp-function-dataverse/commits?author=rpothin" title="Tests">⚠️</a></td>
-  </tr>
-</table>
-
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-> *This project follows the [all-contributors](https://allcontributors.org/docs/en/specification) specification. Everyone who would like to contribute to it is welcome!*
-
 ## 📝 License
 
 All files in this repository are subject to the [MIT](LICENSE) license.
@@ -159,8 +141,5 @@ All files in this repository are subject to the [MIT](LICENSE) license.
 
 We would like to thank the open-source projects below that helped us find some ideas on how to organize this project.
 
-- [budibase](https://github.com/Budibase/budibase/) - *for the inspiration for the format of this README*
-- [all-contributors](https://github.com/all-contributors/all-contributors) - *to make the management of the contributors list easier*
-- [keep-a-changelog](https://github.com/olivierlacan/keep-a-changelog) - *for the inspiratation for the management of the changelog*
-- [contributor_covenant](https://github.com/EthicalSource/contributor_covenant) - *for the amazing code of conduct template they provide*
-- [coe-starter-kit](https://github.com/microsoft/coe-starter-kit) & [coe-alm-accelerator-templates](https://github.com/microsoft/coe-alm-accelerator-templates) - *for all the solutions and best practices shared around ALM for Power Platform development*
+- [Azure-Samples/todo-csharp-cosmos-sql](https://github.com/Azure-Samples/todo-csharp-cosmos-sql) & all the other great Azure Developer CLI templates in this organization
+- [Gordonby/servicebus-dotnet-functionapp](https://github.com/Gordonby/servicebus-dotnet-functionapp)
