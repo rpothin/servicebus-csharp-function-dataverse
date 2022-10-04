@@ -93,6 +93,31 @@ When `azd up` is complete it will output the following URLs:
 ```mermaid
 graph TB
     subgraph Function Apps
+    timer(Timer Trigger)
+    sbTrigger
+    
+    end
+
+    subgraph ServiceBus
+    sb(Queue)
+    timer-->|Every minute, write message|sb
+    sb-->|On message add|sbTrigger(Queue Trigger)
+
+    end
+
+    subgraph Logging
+    ai(App Insights)
+    la(Log Analytics workspace)
+    ai-->la   
+    timer-->ai
+        sbTrigger-->ai
+    end
+
+```
+
+```mermaid
+graph TB
+    subgraph Function Apps
         sbTrigger
     end
 
@@ -112,6 +137,7 @@ graph TB
         dataverse(Dataverse)
         sbTrigger-->|Get logged in user details|dataverse
     end
+    
 ```
 
 ## ❗ Code of Conduct
