@@ -1,0 +1,2 @@
+# servicebus-csharp-function-dataverse
+A complete solution that includes everything you need to build, deploy, and monitor an Azure solution to process messages into a Dataverse environment. This application uses the Azure Developer CLI (azd) to get you up and running on Azure quickly, an Azure Service Bus for the messages, a C# Azure Functions app using the Microsoft.PowerPlatform.Dataverse.Client package, and Azure Monitor for monitoring and logging.
