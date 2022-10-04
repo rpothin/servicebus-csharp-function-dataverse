@@ -37,7 +37,7 @@
 
 It is a GitHub repository using the [**Azure Developer CLI**](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview) to get you up and running on Azure quickly in a scenario where you need to process messages from an Azure Service Bus to a Dataverse environment through a C# Azure Functions app.
 
-It contains components (GitHub workflows, infrastructure as code in Bicep, C# Azure Functions app code...) that will help you be up and running quickly.
+It contains components (infrastructure as code in Bicep, C# Azure Functions app code...) that will help you be up and running quickly.
 
 ## 📖 Documentation
 
