@@ -1,6 +1,6 @@
-name: csharp-dataverse-service-bus
+name: servicebus-csharp-function-dataverse
 metadata:
-  template: csharp-dataverse-service-bus@0.0.1-beta
+  template: servicebus-csharp-function-dataverse@0.0.1-beta
 services:
   app:
     project: src/functionapp
