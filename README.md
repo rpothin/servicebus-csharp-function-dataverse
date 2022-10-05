@@ -63,6 +63,8 @@ curl -fsSL https://aka.ms/install-azd.sh | bash
 
 - [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
 
+Before moving on to the next step, you will have to be logged in to Azure CLI using the `az login` command.
+
 ### Quickstart
 
 The fastest way for you to get this application up and running on Azure is to use the `azd up` command. This single command will create and configure all necessary Azure resources - including access policies and roles for your account and service-to-service communication with Managed Identities.
@@ -76,7 +78,7 @@ azd up --template rpothin/servicebus-csharp-function-dataverse
 
 You will be prompted for the following information:
 
-- `Environment Name`: This will be used as a prefix for the resource group that will be created to hold all Azure resources. This name should be unique within your Azure subscription.
+- `Environment Name`: This will be used in the name of the the resource group and the resources that will be created in Azure. This name should be unique within your Azure subscription.
 - `Azure Location`: The Azure location where your resources will be deployed.
 - `Azure Subscription`: The Azure Subscription where your resources will be deployed.
 
@@ -86,27 +88,29 @@ You will be prompted for the following information:
 When `azd up` is complete it will output the following URLs:
 
 - Azure Portal link to view resources
-- ToDo Web application frontend
-- ToDo API application
+- Azure Functions application
 
 #### Post-deployment manual steps
 
-1. Add the following secrets to the Key Vault:
+1. Stop the Azure Functions app
+2. Add the following secrets to the Key Vault:
    - **environment-url**: URL of the Power Platform / Dataverse environment you want to integrate with
    - **client-id**: Application / Client ID of the Azure AD app registration you want to use to integrate with the considered Power Platform / Dataverse environment
    - **client-secret**: Secret created for the Azure AD app registration you want to use to integrate with the considered Power Platform / Dataverse environment
 
-2. Stop and start again the Azure Functions app and check in the **Configuration** page that the Key Vault references are correctly configured.
+3. Start again the Azure Functions app and check in the **Configuration** page that the Key Vault references are correctly configured.
 
 > **Note**
 > By restarting the Azure Functions app, you will also trigger the configuration of the connection to the Power Platform / Dataverse environment, done during the startup of the instance.
 
 #### Test the solution
 
-1. Push a message in the `dataverse-inbound` queue (*configured in the [**main.parameters.json**](./infra/main.parameters.json) file*) - for example, you can do it from the queue in Azure Portal
-2. In Application Insights, check if you seen the traces below:
+1. Push a message in the `dataverse-inbound` queue (*configured in the [**main.parameters.json**](./infra/main.parameters.json) file*) - for example, you can do it directly from the queue in Azure Portal using the **Service Bus Explorer** feature
+2. In Application Insights, go to the **Transaction Search** page and check if you have the traces below:
    - `C# ServiceBus queue trigger function processed message`
    - `Logged on user id`
+
+If you find the documented traces it means the solution provided in this template is working.
 
 ### Architecture
 
