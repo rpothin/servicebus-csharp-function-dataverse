@@ -80,13 +80,33 @@ You will be prompted for the following information:
 - `Azure Location`: The Azure location where your resources will be deployed.
 - `Azure Subscription`: The Azure Subscription where your resources will be deployed.
 
-> NOTE: This may take a while to complete as it executes three commands: `azd init` (initializes environment), `azd provision` (provisions Azure resources), and `azd deploy` (deploys application code). You will see a progress indicator as it provisions and deploys your application.
+> **Note**
+> This may take a while to complete as it executes three commands: `azd init` (initializes environment), `azd provision` (provisions Azure resources), and `azd deploy` (deploys application code). You will see a progress indicator as it provisions and deploys your application.
 
 When `azd up` is complete it will output the following URLs:
 
 - Azure Portal link to view resources
 - ToDo Web application frontend
 - ToDo API application
+
+#### Post-deployment manual steps
+
+1. Add the following secrets to the Key Vault:
+   - **environment-url**: URL of the Power Platform / Dataverse environment you want to integrate with
+   - **client-id**: Application / Client ID of the Azure AD app registration you want to use to integrate with the considered Power Platform / Dataverse environment
+   - **client-secret**: Secret created for the Azure AD app registration you want to use to integrate with the considered Power Platform / Dataverse environment
+
+2. Stop and start again the Azure Functions app and check in the **Configuration** page that the Key Vault references are correctly configured.
+
+> **Note**
+> By restarting the Azure Functions app, you will also trigger the configuration of the connection to the Power Platform / Dataverse environment, done during the startup of the instance.
+
+#### Test the solution
+
+1. Push a message in the `dataverse-inbound` queue (*configured in the [**main.parameters.json**](./infra/main.parameters.json) file*) - for example, you can do it from the queue in Azure Portal
+2. In Application Insights, check if you seen the traces below:
+   - `C# ServiceBus queue trigger function processed message`
+   - `Logged on user id`
 
 ### Architecture
 
