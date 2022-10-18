@@ -12,7 +12,7 @@ var abbreviations = loadJsonContent('../abbreviations.json')
 /* Resources */
 // Key Vault
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-  name: '${abbreviations.keyVaultVaults}${environmentName}-${substring(uniqueIdentifierForResourcesName, 0, 24 - length(abbreviations.keyVaultVaults) - length(environmentName))}'
+  name: '${abbreviations.keyVaultVaults}${environmentName}-${substring(uniqueIdentifierForResourcesName, 0, 5)}' // 24 - length(abbreviations.keyVaultVaults) - length(environmentName)
   location: location
   tags: tags
   properties: {
