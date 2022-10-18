@@ -4,6 +4,7 @@ param location string = resourceGroup().location
 param principalId string = ''
 param uniqueIdentifierForResourcesName string = ''
 param tags object
+param keyVaultSecretsDetails array = []
 
 /* Variables */
 var abbreviations = loadJsonContent('../abbreviations.json')
@@ -26,6 +27,16 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     ] : []
   }
 }
+
+// Key Vault Secrets
+resource keyVaultSecrets 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = [for secret in keyVaultSecretsDetails: {
+  parent: keyVault
+  name: secret.name
+  properties: {
+    contentType: secret.contentType
+    value: secret.value
+  }
+}]
 
 /* Outputs */
 output keyVaultEndpoint string = keyVault.properties.vaultUri

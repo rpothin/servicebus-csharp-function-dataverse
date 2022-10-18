@@ -5,6 +5,7 @@ param principalId string = ''
 param uniqueIdentifierForResourcesName string = ''
 param tags object
 param serviceBusQueuesNames array = []
+param keyVaultSecretsDetails array = []
 
 /* Resources */
 // Azure Monitor
@@ -27,6 +28,7 @@ module keyVault 'modules/keyvault.bicep' = {
     principalId: principalId
     uniqueIdentifierForResourcesName: uniqueIdentifierForResourcesName
     tags: tags
+    keyVaultSecretsDetails: keyVaultSecretsDetails
   }
 }
 

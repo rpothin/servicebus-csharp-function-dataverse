@@ -15,6 +15,25 @@
             "value": [
                 "dataverse-inbound"
             ]
+        },
+        "keyVaultSecretsDetails": {
+            "value": [
+                {
+                    "name": "environment-url",
+                    "contentType": "Dataverse Environment Url",
+                    "value": "${DATAVERSE_ENV_URL}"
+                },
+                {
+                    "name": "client-id",
+                    "contentType": "App Registration ID",
+                    "value": "${DATAVERSE_CLIENT_ID}"
+                },
+                {
+                    "name": "client-secret",
+                    "contentType": "App Registration Secret",
+                    "value": "${DATAVERSE_CLIENT_SECRET}"
+                }
+            ]
         }
     }
 }

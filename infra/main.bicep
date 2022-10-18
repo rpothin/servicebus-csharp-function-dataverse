@@ -17,6 +17,9 @@ param principalId string = ''
 @description('Name of queues to configure in the service bus')
 param serviceBusQueuesNames array = []
 
+@description('Key vault secrets name, content type and value')
+param keyVaultSecretsDetails array = []
+
 /* Variables */
 var abbreviations = loadJsonContent('./abbreviations.json')
 var uniqueIdentifierForResourcesName = toLower(uniqueString(subscription().id, '${environmentName}', location))
@@ -42,6 +45,7 @@ module resources './resources.bicep' = {
         uniqueIdentifierForResourcesName: uniqueIdentifierForResourcesName
         tags: tags
         serviceBusQueuesNames: serviceBusQueuesNames
+        keyVaultSecretsDetails: keyVaultSecretsDetails
     }
 }
 
