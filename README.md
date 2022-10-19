@@ -64,6 +64,10 @@ curl -fsSL https://aka.ms/install-azd.sh | bash
 
 You will also need an Azure account with an active subscription (_you can also [create one for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) to start exploring_).
 
+To be able to configure the solution you will need at least the roles below on the considered Azure subscription:
+- [Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#contributor)
+- [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) - *for the configuration of the access of the Azure Functions app to the Azure Service Bus*
+
 #### Dataverse
 
 First you will need to have a Dataverse / Power Platform environment. To do that, you can choose one of the option below:
