@@ -67,20 +67,22 @@ You will also need an Azure account with an active subscription (_you can also [
 #### Dataverse
 
 First you will need to have a Dataverse / Power Platform environment. To do that, you can choose one of the option below:
+
 - [From the Power Platform Administration Center](https://learn.microsoft.com/en-us/power-platform/admin/create-environment#create-an-environment-with-a-database)
 - [Using the Power Platform CLI](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/admin#pac-admin-create)
 - [Starting free with a Power Apps Developer Plan](https://powerapps.microsoft.com/en-us/developerplan/)
 
 > **Note**
-> You will need the URL of your Dataverse / Power Platform environment (*available in the `Overview` page*) in the configuration of some custom environment variables.
+> You will need the URL of your Dataverse / Power Platform environment (_available in the `Overview` page_) in the configuration of some custom environment variables.
 
 Then you will need to configure an application user on your environment by:
+
 1. [Register an application in Azure AD](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application)
 2. [Add a client secret to your Azure AD app registration](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-client-secret)
 3. [Add you Azure AD app registration as an application user to your Dataverse / Power Platform environment](https://learn.microsoft.com/en-us/power-platform/admin/manage-application-users#create-an-application-user)
 
 > **Note**
-> You will need the Azure AD app registration client ID (*available in the `Overview` page*) and its client secret value in the configuration of some custom environment variables.
+> You will need the Azure AD app registration client ID (_available in the `Overview` page_) and its client secret value in the configuration of some custom environment variables.
 
 ### Quickstart
 
@@ -105,7 +107,7 @@ You will be prompted for the following information:
 azd env set <key> <value>
 ```
 
-| Key                     | Description                                                                                                                                            |
+| **Key**                 | **Description**                                                                                                                                        |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | DATAVERSE_ENV_URL       | URL of the considered Dataverse / Power Platform environment                                                                                           |
 | DATAVERSE_CLIENT_ID     | Client ID of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment |
@@ -162,6 +164,40 @@ graph TB
     end
 
 ```
+
+### GitHub configuration
+
+By following the steps below you will configure the elements required to run the GitHub workflow to provision the Azure resources and deploy application code.
+
+> **Note**
+> Configuration of a service principal in Azure, granting the access to your Azure subscription to it and configure the out-of-the-box environment variables as actions secrets in your GitHub repository (_AZURE_CREDENTIALS, AZURE_ENV_NAME, AZURE_LOCATION and AZURE_SUBSCRIPTION_ID_)
+
+In your workspace linked to a GitHub repository:
+
+1. Configure a service principal in Azure and grant the `Contributor` role to your Azure subscription to it
+
+```powershell
+azd pipeline config --provider GitHub # If you already have a service principal you can add the --principal-name parameter
+```
+
+2. Add the `` role to your Azure subscription to the service principal (_name in the output of the previous command if not provided initially_)
+
+```powershell
+azd pipeline config --provider GitHub --principal-name "az-dev-..." --principal-role "User Access Administrator"
+```
+
+3. Set the actions secrets associated to the custom environment variables using the command below
+
+```powershell
+# Paste secret value for the current repository in an interactive prompt
+gh secret set <secret name>
+```
+
+| **Secret Name**         | **Description**                                                                                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DATAVERSE_ENV_URL       | URL of the considered Dataverse / Power Platform environment                                                                                           |
+| DATAVERSE_CLIENT_ID     | Client ID of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment |
+| DATAVERSE_CLIENT_SECRET | Secret of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment    |
 
 ## ❗ Code of Conduct
 
