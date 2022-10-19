@@ -113,7 +113,7 @@ When `azd up` is complete it will output the following URLs:
 
 #### Test the solution
 
-1. Push a message in the `dataverse-inbound` queue (_configured in the [**main.parameters.json**](./infra/main.parameters.json) file_) - for example, you can do it directly from the queue in Azure Portal using the **Service Bus Explorer** feature
+1. Push a message in the `dataverse-inbound` queue (_configured in the [**main.parameters.json**](./infra/main.parameters.json) file_) - for example, you can do it directly from the queue in Azure Portal using the [**Service Bus Explorer**](https://learn.microsoft.com/en-us/azure/service-bus-messaging/explorer) feature
 2. In Application Insights, go to the **Transaction Search** page and check if you have the traces below:
    - `C# ServiceBus queue trigger function processed message`
    - `Logged on user id`
