@@ -70,7 +70,7 @@ You will also need an Azure account with an active subscription (*you can also [
 
 ### Quickstart
 
-The fastest way for you to get this application up and running on Azure is to use the `azd up` command. This single command will create and configure all necessary Azure resources - including access policies and roles for your account and service-to-service communication with Managed Identities.
+The fastest way for you to get this application up and running on Azure is to follow the procedure below.
 
 1. Open a terminal, create a new empty folder, and change into it
 2. Run the following command to initialize the project
