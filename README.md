@@ -43,6 +43,8 @@ It contains components (GitHub workflow, Azure DevOps pipeline, infrastructure a
 
 ### Prerequisites
 
+#### Azure Developer CLI
+
 The following prerequisites are required to use this application. Please ensure that you have them all installed locally.
 
 - [Git (2.36.1+)](https://git-scm.com/)
@@ -65,15 +67,19 @@ curl -fsSL https://aka.ms/install-azd.sh | bash
 
 Before moving on to the next step, you will have to be logged in to Azure CLI using the `az login` command.
 
+#### Dataverse / Power Platform environment
+
+> Work in progress ⌚
+
 ### Quickstart
 
 The fastest way for you to get this application up and running on Azure is to use the `azd up` command. This single command will create and configure all necessary Azure resources - including access policies and roles for your account and service-to-service communication with Managed Identities.
 
-1. Open a terminal, create a new empty folder, and change into it.
-1. Run the following command to initialize the project, provision Azure resources, and deploy the application code.
+1. Open a terminal, create a new empty folder, and change into it
+2. Run the following command to initialize the project
 
 ```powershell
-azd up --template rpothin/servicebus-csharp-function-dataverse
+azd init --template rpothin/servicebus-csharp-function-dataverse
 ```
 
 You will be prompted for the following information:
@@ -82,26 +88,25 @@ You will be prompted for the following information:
 - `Azure Location`: The Azure location where your resources will be deployed.
 - `Azure Subscription`: The Azure Subscription where your resources will be deployed.
 
+3. Run the following command to set the required custom environment variables
+
+```powershell
+azd env set <key> <value>
+```
+
+4. Run the following command to provision Azure resources, and deploy the application code
+
+```powershell
+azd up
+```
+
 > **Note**
-> This may take a while to complete as it executes three commands: `azd init` (initializes environment), `azd provision` (provisions Azure resources), and `azd deploy` (deploys application code). You will see a progress indicator as it provisions and deploys your application.
+> This may take a while to complete as it executes two commands: `azd provision` (provisions Azure resources) and `azd deploy` (deploys application code). You will see a progress indicator as it provisions and deploys your application.
 
 When `azd up` is complete it will output the following URLs:
 
 - Azure Portal link to view resources
 - Azure Functions application
-
-#### Post-deployment manual steps
-
-1. Stop the Azure Functions app
-2. Add the following secrets to the Key Vault:
-   - **environment-url**: URL of the Power Platform / Dataverse environment you want to integrate with
-   - **client-id**: Application / Client ID of the Azure AD app registration you want to use to integrate with the considered Power Platform / Dataverse environment
-   - **client-secret**: Secret created for the Azure AD app registration you want to use to integrate with the considered Power Platform / Dataverse environment
-
-3. Start again the Azure Functions app and check in the **Configuration** page that the Key Vault references are correctly configured.
-
-> **Note**
-> By restarting the Azure Functions app, you will also trigger the configuration of the connection to the Power Platform / Dataverse environment, done during the startup of the instance.
 
 #### Test the solution
 
