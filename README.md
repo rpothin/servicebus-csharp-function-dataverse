@@ -43,9 +43,9 @@ It contains components (GitHub workflow, Azure DevOps pipeline, infrastructure a
 
 ### Prerequisites
 
-#### Azure Developer CLI
+#### Azure
 
-The following prerequisites are required to use this application. Please ensure that you have them all installed locally.
+The following prerequisites are required to use this solution. Please ensure that you have them all installed locally.
 
 - [Git (2.36.1+)](https://git-scm.com/)
 - [GitHub CLI (v2.3+)](https://github.com/cli/cli)
@@ -62,7 +62,9 @@ curl -fsSL https://aka.ms/install-azd.sh | bash
 
 - [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
 
-#### Dataverse / Power Platform environment
+You will also need an Azure account with an active subscription (*you can also [create one for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) to start exploring*).
+
+#### Dataverse
 
 > Work in progress ⌚
 
