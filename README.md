@@ -60,7 +60,7 @@ powershell -ex AllSigned -c "Invoke-RestMethod 'https://aka.ms/install-azd.ps1' 
 curl -fsSL https://aka.ms/install-azd.sh | bash
 ```
 
-- [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) - *for the Azure Functions app code*
 
 You will also need an Azure account with an active subscription (*you can also [create one for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) to start exploring*).
 
