@@ -51,21 +51,16 @@ The following prerequisites are required to use this application. Please ensure 
 - [GitHub CLI (v2.3+)](https://github.com/cli/cli)
 - [Azure CLI (2.38.0+)](https://docs.microsoft.com/cli/azure/install-azure-cli)
 - [Azure Developer CLI](https://aka.ms/azure-dev/install)
-   - Windows:
 
 ```powershell
+# For Windows
 powershell -ex AllSigned -c "Invoke-RestMethod 'https://aka.ms/install-azd.ps1' | Invoke-Expression"
-```
 
-   - Linux/MacOS:
-
-```powershell
+# For Linux/MacOS
 curl -fsSL https://aka.ms/install-azd.sh | bash
 ```
 
 - [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
-
-Before moving on to the next step, you will have to be logged in to Azure CLI using the `az login` command.
 
 #### Dataverse / Power Platform environment
 
