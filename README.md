@@ -66,7 +66,21 @@ You will also need an Azure account with an active subscription (_you can also [
 
 #### Dataverse
 
-> Work in progress ⌚
+First you will need to have a Dataverse / Power Platform environment. To do that, you can choose one of the option below:
+- [From the Power Platform Administration Center](https://learn.microsoft.com/en-us/power-platform/admin/create-environment#create-an-environment-with-a-database)
+- [Using the Power Platform CLI](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/admin#pac-admin-create)
+- [Starting free with a Power Apps Developer Plan](https://powerapps.microsoft.com/en-us/developerplan/)
+
+> **Note**
+> You will need the URL of your Dataverse / Power Platform environment in the configuration of some custom environment variables.
+
+Then you will need to configure an application user on your environment by:
+1. [Register an application in Azure AD](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application)
+2. [Add a client secret to your Azure AD app registration](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-client-secret)
+3. [Add you Azure AD app registration as an application user to your Dataverse / Power Platform environment](https://learn.microsoft.com/en-us/power-platform/admin/manage-application-users#create-an-application-user)
+
+> **Note**
+> You will need the Azure AD app registration client ID (*available in the `Overview` page*) and its client secret value in the configuration of some custom environment variables.
 
 ### Quickstart
 
