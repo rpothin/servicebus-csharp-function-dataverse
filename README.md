@@ -60,9 +60,9 @@ powershell -ex AllSigned -c "Invoke-RestMethod 'https://aka.ms/install-azd.ps1' 
 curl -fsSL https://aka.ms/install-azd.sh | bash
 ```
 
-- [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) - *for the Azure Functions app code*
+- [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) - _for the Azure Functions app code_
 
-You will also need an Azure account with an active subscription (*you can also [create one for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) to start exploring*).
+You will also need an Azure account with an active subscription (_you can also [create one for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) to start exploring_).
 
 #### Dataverse
 
@@ -91,6 +91,12 @@ You will be prompted for the following information:
 azd env set <key> <value>
 ```
 
+| Key                     | Description                                                                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DATAVERSE_ENV_URL       | URL of the considered Dataverse / Power Platform environment                                                                                           |
+| DATAVERSE_CLIENT_ID     | Client ID of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment |
+| DATAVERSE_CLIENT_SECRET | Secret of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment    |
+
 4. Run the following command to provision Azure resources, and deploy the application code
 
 ```powershell
@@ -107,7 +113,7 @@ When `azd up` is complete it will output the following URLs:
 
 #### Test the solution
 
-1. Push a message in the `dataverse-inbound` queue (*configured in the [**main.parameters.json**](./infra/main.parameters.json) file*) - for example, you can do it directly from the queue in Azure Portal using the **Service Bus Explorer** feature
+1. Push a message in the `dataverse-inbound` queue (_configured in the [**main.parameters.json**](./infra/main.parameters.json) file_) - for example, you can do it directly from the queue in Azure Portal using the **Service Bus Explorer** feature
 2. In Application Insights, go to the **Transaction Search** page and check if you have the traces below:
    - `C# ServiceBus queue trigger function processed message`
    - `Logged on user id`
