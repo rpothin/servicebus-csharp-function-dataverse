@@ -72,7 +72,7 @@ First you will need to have a Dataverse / Power Platform environment. To do that
 - [Starting free with a Power Apps Developer Plan](https://powerapps.microsoft.com/en-us/developerplan/)
 
 > **Note**
-> You will need the URL of your Dataverse / Power Platform environment in the configuration of some custom environment variables.
+> You will need the URL of your Dataverse / Power Platform environment (*available in the `Overview` page*) in the configuration of some custom environment variables.
 
 Then you will need to configure an application user on your environment by:
 1. [Register an application in Azure AD](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application)
