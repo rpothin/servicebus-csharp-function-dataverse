@@ -122,6 +122,8 @@ If you find the documented traces it means the solution provided in this templat
 
 ### Architecture
 
+![servicebus-csharp-function-dataverse](https://user-images.githubusercontent.com/23240245/194187578-dd13f3d7-22bb-486e-a54c-1a8242cc5e7a.jpg)
+
 ```mermaid
 graph TB
     subgraph Function Apps
