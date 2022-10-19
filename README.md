@@ -136,35 +136,6 @@ When `azd up` is complete it will output the following URLs:
 
 If you find the documented traces it means the solution provided in this template is working.
 
-### Architecture
-
-![servicebus-csharp-function-dataverse](https://user-images.githubusercontent.com/23240245/194187578-dd13f3d7-22bb-486e-a54c-1a8242cc5e7a.jpg)
-
-```mermaid
-graph TB
-    subgraph Function Apps
-        sbTrigger
-    end
-
-    subgraph Service Bus
-        sb(Queue)
-        sb-->|On message add|sbTrigger(Queue Trigger)
-    end
-
-    subgraph Azure Monitor
-        ai(App Insights)
-        la(Log Analytics workspace)
-        sbTrigger-->|Message and logged in user id|ai
-        ai-->la
-    end
-
-    subgraph Power Platform
-        dataverse(Dataverse)
-        sbTrigger-->|Get logged in user details|dataverse
-    end
-
-```
-
 ### GitHub configuration
 
 By following the steps below you will configure the elements required to run the GitHub workflow to provision the Azure resources and deploy application code.
@@ -198,6 +169,35 @@ gh secret set <secret name>
 | DATAVERSE_ENV_URL       | URL of the considered Dataverse / Power Platform environment                                                                                           |
 | DATAVERSE_CLIENT_ID     | Client ID of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment |
 | DATAVERSE_CLIENT_SECRET | Secret of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment    |
+
+### Architecture
+
+![servicebus-csharp-function-dataverse](https://user-images.githubusercontent.com/23240245/194187578-dd13f3d7-22bb-486e-a54c-1a8242cc5e7a.jpg)
+
+```mermaid
+graph TB
+    subgraph Function Apps
+        sbTrigger
+    end
+
+    subgraph Service Bus
+        sb(Queue)
+        sb-->|On message add|sbTrigger(Queue Trigger)
+    end
+
+    subgraph Azure Monitor
+        ai(App Insights)
+        la(Log Analytics workspace)
+        sbTrigger-->|Message and logged in user id|ai
+        ai-->la
+    end
+
+    subgraph Power Platform
+        dataverse(Dataverse)
+        sbTrigger-->|Get logged in user details|dataverse
+    end
+
+```
 
 ## ❗ Code of Conduct
 
