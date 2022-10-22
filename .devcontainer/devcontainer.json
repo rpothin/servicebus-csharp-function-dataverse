@@ -3,7 +3,7 @@
     "build": {
         "dockerfile": "Dockerfile",
         "args": {
-            "VARIANT": "bullseye"
+            "VARIANT": "6.0-bullseye"
         }
     },
     "features": {
@@ -14,12 +14,14 @@
         "docker-from-docker": "20.10"
     },
     "extensions": [
-        "ms-azuretools.azure-dev",
-        "ms-azuretools.vscode-bicep",
-        "ms-azuretools.vscode-docker",
-        "ms-dotnettools.csharp",
-        "ms-dotnettools.vscode-dotnet-runtime"
-    ],
+		"ms-azuretools.azure-dev",
+		"ms-azuretools.vscode-bicep",
+		"ms-azuretools.vscode-docker",
+		"ms-dotnettools.csharp",
+		"ms-dotnettools.vscode-dotnet-runtime",
+		"ms-azuretools.vscode-azurefunctions",
+		"microsoft-IsvExpTools.powerplatform-vscode"
+	],
     "forwardPorts": [
         3000,
         3100
