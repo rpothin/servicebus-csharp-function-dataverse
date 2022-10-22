@@ -20,7 +20,8 @@
 		"ms-dotnettools.csharp",
 		"ms-dotnettools.vscode-dotnet-runtime",
 		"ms-azuretools.vscode-azurefunctions",
-		"microsoft-IsvExpTools.powerplatform-vscode"
+		"microsoft-IsvExpTools.powerplatform-vscode",
+		"ms-dotnettools.dotnet-interactive-vscode"
 	],
     "forwardPorts": [
         3000,
