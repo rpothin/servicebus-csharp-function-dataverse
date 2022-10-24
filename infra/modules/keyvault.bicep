@@ -8,11 +8,16 @@ param keyVaultSecretsDetails array = []
 
 /* Variables */
 var abbreviations = loadJsonContent('../abbreviations.json')
+var keyVaultNameMaxLength = 24
+var keyVaultNamePrefix = '${abbreviations.keyVaultVaults}${environmentName}-${uniqueIdentifierForResourcesName}'
+var keyVaultNamePrefixLength = length(keyVaultNamePrefix)
+var substringLength = keyVaultNameMaxLength - 1 - keyVaultNamePrefixLength > length(uniqueIdentifierForResourcesName) ? length(uniqueIdentifierForResourcesName) : keyVaultNameMaxLength - 1 - keyVaultNamePrefixLength
+var keyVaultNameSuffix = substring(uniqueIdentifierForResourcesName, 0, substringLength)
 
 /* Resources */
 // Key Vault
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-  name: '${abbreviations.keyVaultVaults}${environmentName}-${substring(uniqueIdentifierForResourcesName, 0, 23 - length(abbreviations.keyVaultVaults) - length(environmentName))}'
+  name: '${keyVaultNamePrefix}-${keyVaultNameSuffix}'
   location: location
   tags: tags
   properties: {
