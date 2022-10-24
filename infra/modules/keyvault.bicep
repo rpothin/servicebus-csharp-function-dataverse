@@ -9,7 +9,7 @@ param keyVaultSecretsDetails array = []
 /* Variables */
 var abbreviations = loadJsonContent('../abbreviations.json')
 var keyVaultNameMaxLength = 24
-var keyVaultNamePrefix = '${abbreviations.keyVaultVaults}${environmentName}-${uniqueIdentifierForResourcesName}'
+var keyVaultNamePrefix = '${abbreviations.keyVaultVaults}${environmentName}'
 var keyVaultNamePrefixLength = length(keyVaultNamePrefix)
 var substringLength = keyVaultNameMaxLength - 1 - keyVaultNamePrefixLength > length(uniqueIdentifierForResourcesName) ? length(uniqueIdentifierForResourcesName) : keyVaultNameMaxLength - 1 - keyVaultNamePrefixLength
 var keyVaultNameSuffix = substring(uniqueIdentifierForResourcesName, 0, substringLength)
