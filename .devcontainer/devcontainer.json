@@ -14,13 +14,13 @@
         "docker-from-docker": "20.10"
     },
     "extensions": [
-		"ms-azuretools.azure-dev",
-		"ms-azuretools.vscode-bicep",
-		"ms-azuretools.vscode-docker",
-		"ms-dotnettools.csharp",
-		"ms-dotnettools.vscode-dotnet-runtime",
-		"ms-azuretools.vscode-azurefunctions",
-		"microsoft-IsvExpTools.powerplatform-vscode"
+        "ms-azuretools.azure-dev",
+        "ms-azuretools.vscode-bicep",
+        "ms-azuretools.vscode-docker",
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "ms-azuretools.vscode-azurefunctions",
+        "microsoft-IsvExpTools.powerplatform-vscode"
 	],
     "forwardPorts": [
         3000,
