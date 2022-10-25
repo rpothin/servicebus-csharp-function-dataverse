@@ -9,7 +9,7 @@
     "features": {
         "github-cli": "latest",
         "azure-cli": "latest",
-		"powershell": "latest",
+        "powershell": "latest",
         "dotnet": "6.0",
         "docker-from-docker": "20.10"
     },
