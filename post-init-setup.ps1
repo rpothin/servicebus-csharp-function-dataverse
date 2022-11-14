@@ -219,3 +219,25 @@ azd env set SERVICE_PRINCIPAL_NAME $azureDeploymentAppRegistrationName
 Write-Verbose "👍🏼 Service principal name added to the '.env' file of the default environment!"
 
 #endregion Create a service principal to manage the solution deployment to the considered Azure subscription
+
+#region Get Dataverse environment URL
+
+# Todo
+# + set DATAVERSE_ENV_URL env variable with azd env set command
+
+#endregion Get Dataverse environment URL
+
+#region Create a service principal to be assigned as an application user to the considered Dataverse environment
+
+# Todo
+# + Generate a secret
+# + Set DATAVERSE_CLIENT_ID and DATAVERSE_CLIENT_SECRET env variables with azd env set command
+
+#endregion Create a service principal to be assigned as an application user to the considered Dataverse environment
+
+#region Assign service principal as an application user to the considered Dataverse environment
+
+# Todo
+# Use pac admin assign-user command
+
+#endregion Assign service principal as an application user to the considered Dataverse environment
