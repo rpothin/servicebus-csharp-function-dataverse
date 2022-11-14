@@ -220,14 +220,6 @@ Write-Verbose "👍🏼 Service principal name added to the '.env' file of the d
 
 #endregion Create a service principal to manage the solution deployment to the considered Azure subscription
 
-#region Get Dataverse environment URL
-
-# Todo
-# Propose to create an environment if the user don't have one
-# + set DATAVERSE_ENV_URL env variable with azd env set command
-
-#endregion Get Dataverse environment URL
-
 #region Create a service principal to be assigned as an application user to the considered Dataverse environment
 
 # Todo
@@ -235,6 +227,14 @@ Write-Verbose "👍🏼 Service principal name added to the '.env' file of the d
 # + Set DATAVERSE_CLIENT_ID and DATAVERSE_CLIENT_SECRET env variables with azd env set command
 
 #endregion Create a service principal to be assigned as an application user to the considered Dataverse environment
+
+#region Get Dataverse environment URL
+
+# Todo
+# Propose to create an environment if the user don't have one
+# + set DATAVERSE_ENV_URL env variable with azd env set command
+
+#endregion Get Dataverse environment URL
 
 #region Assign service principal as an application user to the considered Dataverse environment
 
