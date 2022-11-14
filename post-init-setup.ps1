@@ -223,6 +223,7 @@ Write-Verbose "👍🏼 Service principal name added to the '.env' file of the d
 #region Get Dataverse environment URL
 
 # Todo
+# Propose to create an environment if the user don't have one
 # + set DATAVERSE_ENV_URL env variable with azd env set command
 
 #endregion Get Dataverse environment URL
