@@ -290,9 +290,29 @@ Write-Verbose "👍🏼 Service principal password added to the '.env' file of t
 
 #region Get Dataverse environment URL
 
-# Todo
-# Propose to create an environment if the user don't have one
-# + set DATAVERSE_ENV_URL env variable with azd env set command
+$dataverseEnvironmentUrl = ""
+
+# Ask for the URL of the Dataverse environment to consider
+$response = Read-Host "Please, enter the URL of the Dataverse environment to consider. If you don't have an environment, just press enter so an environment can be created."
+
+if ([string]::IsNullOrEmpty($response)) {
+    Write-Host "Creation of a Dataverse environment with the following configuration..."
+
+    Write-Host "Key: Value"
+
+    $response = Read-Host "Are you OK with this configuration? (Y/N)"
+
+    if (!($response.ToLower() -eq "y")) {
+        Write-Host "Please review and update the configurations in the 'Variables initialization' region of this script before re-running it."
+    } else {
+        # pac admin create
+    }
+}
+
+# Add Dataverse environment URL as an environment variable to the default environment
+Write-Verbose "Add Dataverse environment URL to the '.env' file of the default environment..."
+azd env set DATAVERSE_ENV_URL $dataverseEnvironmentUrl
+Write-Verbose "👍🏼 Dataverse environment URL added to the '.env' file of the default environment!"
 
 #endregion Get Dataverse environment URL
 
