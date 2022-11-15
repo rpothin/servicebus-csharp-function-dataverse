@@ -27,7 +27,6 @@
 
 #region Variables initialization
 
-
 $azureEnvironmentsFolderBasePath = ".\.azure\"
 $azureEnvironmentsConfigurationFilePath = $azureEnvironmentsFolderBasePath + "config.json"
 $environmentConfigurationFileName = "\.env"
@@ -143,7 +142,7 @@ try {
         $azureDefaultEnvironmentDetailSplitted = $azureDefaultEnvironmentDetail.Split('=')
 
         if ($azureDefaultEnvironmentDetailSplitted[0] -eq $azureSubscriptionIdEnvironmentVariableName) {
-            $azureDefaultEnvironmentSubscriptionId = $azureDefaultEnvironmentDetailSplitted[1]
+            $azureDefaultEnvironmentSubscriptionId = $azureDefaultEnvironmentDetailSplitted[1].replace("""", "")
         }
     }
 } catch {
@@ -153,6 +152,17 @@ try {
 #endregion Get default environment details
 
 #region Validate the Azure subscription configured on the default environment
+
+# Validate the account to use for the configuration of the considered Azure subscription
+Write-Host "Account considered for the configuration of the considered Azure subscription: $azureSignedInUserMail" -ForegroundColor Blue
+$response = Read-Host "Do you want to use this account for this operation? (Y/N)"
+
+if (!($response.ToLower() -eq "y")) {
+    Write-Host "Connection to Azure CLI with the account you want to use for this operation..."
+    $azureCliLoginResult = az login
+    $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
+    $azureSignedInUserMail = $azureSignedInUser[1]
+}
 
 # Get the name of the Azure subscription configured for the default environment
 $azureDefaultEnvironmentSubscriptionDisplayName = az account subscription show --id $azureDefaultEnvironmentSubscriptionId --query 'displayName' --output tsv
@@ -170,19 +180,10 @@ if (!($response.ToLower() -eq "y")) {
 
 #region Create a service principal to manage the solution deployment to the considered Azure subscription
 
-# Validate the account to use for the creation of the service principal to manage the solution deployment to the considered Azure subscription
-Write-Host "Account considered for creation of the service principal to manage the solution deployment to the considered Azure subscription: $azureSignedInUserMail" -ForegroundColor Blue
-$response = Read-Host "Do you want to use this account for this operation? (Y/N)"
-
-if (!($response.ToLower() -eq "y")) {
-    Write-Host "Connection to Azure CLI with the account you want to use for this operation..."
-    $azureCliLoginResult = az login
-}
-
 # Check if an app registration with the same name exists, if not create one
 $azureDeploymentAppRegistrationName = "sp-$azureDefaultEnvironmentName-azure"
 
-Write-Verbose "Checking if an '$azureDeploymentAppRegistrationName' app registration already exist in..."
+Write-Verbose "Checking if an '$azureDeploymentAppRegistrationName' app registration already exist..."
 $azureDeploymentAppRegistrationId = az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query [].appId --output tsv
 
 if ([string]::IsNullOrEmpty($azureDeploymentAppRegistrationId)) {
@@ -194,7 +195,7 @@ if ([string]::IsNullOrEmpty($azureDeploymentAppRegistrationId)) {
 }
 
 # Check if a service principal with the same name exists, if not create one
-Write-Verbose "Checking if a '$azureDeploymentAppRegistrationName' service principal already exist in..."
+Write-Verbose "Checking if a '$azureDeploymentAppRegistrationName' service principal already exist..."
 $azureDeploymentServicePrincipalId = az ad sp list --filter "appId eq '$azureDeploymentAppRegistrationId'" --query [].id --output tsv
 
 if ([string]::IsNullOrEmpty($azureDeploymentServicePrincipalId)) {
@@ -215,16 +216,75 @@ foreach ($roleToAssignOnAzureSubscription in $rolesToAssignOnAzureSubscription) 
 
 # Add service principal name as an environment variable to the default environment
 Write-Verbose "Add service principal name to the '.env' file of the default environment..."
-azd env set SERVICE_PRINCIPAL_NAME $azureDeploymentAppRegistrationName
+azd env set AZURE_SERVICE_PRINCIPAL_NAME $azureDeploymentAppRegistrationName
 Write-Verbose "👍🏼 Service principal name added to the '.env' file of the default environment!"
 
 #endregion Create a service principal to manage the solution deployment to the considered Azure subscription
 
 #region Create a service principal to be assigned as an application user to the considered Dataverse environment
 
-# Todo
-# + Generate a secret
-# + Set DATAVERSE_CLIENT_ID and DATAVERSE_CLIENT_SECRET env variables with azd env set command
+# Validate the account to use for the creation of the service principal to manage the integration with the Dataverse environment
+Write-Host "Account considered for creation of the service principal to manage the integration with the Dataverse environment: $azureSignedInUserMail" -ForegroundColor Blue
+$response = Read-Host "Do you want to use this account for this operation? (Y/N)"
+
+if (!($response.ToLower() -eq "y")) {
+    Write-Host "Connection to Azure CLI with the account you want to use for this operation..."
+    $azureCliLoginResult = az login --allow-no-subscriptions
+    $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
+    $azureSignedInUserMail = $azureSignedInUser[1]
+}
+
+# Check if an app registration with the same name exists, if not create one
+$dataverseAppRegistrationName = "sp-$azureDefaultEnvironmentName-dataverse"
+
+Write-Verbose "Checking if an '$dataverseAppRegistrationName' app registration already exist..."
+$dataverseAppRegistrationId = az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query [].appId --output tsv
+
+if ([string]::IsNullOrEmpty($dataverseAppRegistrationId)) {
+    Write-Verbose "No '$dataverseAppRegistrationName' app registration found. Creating app registration..."
+    $dataverseAppRegistrationId = az ad app create --display-name $dataverseAppRegistrationName --query appId --output tsv
+    Write-Verbose "👍🏼 '$dataverseAppRegistrationName' app registration created!"
+} else {
+    Write-Verbose "Existing '$dataverseAppRegistrationName' app registration found."
+}
+
+# Check if a service principal with the same name exists, if not create one
+Write-Verbose "Checking if a '$dataverseAppRegistrationName' service principal already exist..."
+$dataverseServicePrincipalId = az ad sp list --filter "appId eq '$dataverseAppRegistrationId'" --query [].id --output tsv
+
+if ([string]::IsNullOrEmpty($dataverseServicePrincipalId)) {
+    Write-Verbose "No '$dataverseAppRegistrationName' service principal found. Creating service principal..."
+    $dataverseServicePrincipalId = az ad sp create --id $dataverseAppRegistrationId --query id --output tsv
+    Write-Verbose "👍🏼 '$dataverseAppRegistrationName' service principal created!"
+} else {
+    Write-Verbose "Existing '$dataverseAppRegistrationName' service principal found."
+}
+
+# Reset credential on service principal
+Write-Verbose "Reset credential on the '$dataverseAppRegistrationName' service principal..."
+$dataverseServicePrincipalCredentialResetResult = az ad sp credential reset --id $dataverseAppRegistrationId --display-name "azd - dataverse - $azureDefaultEnvironmentName" | ConvertFrom-Json
+$dataverseServicePrincipalPassword = $dataverseServicePrincipalCredentialResetResult.password
+
+if (![string]::IsNullOrEmpty($dataverseServicePrincipalPassword)) {
+    Write-Verbose "👍🏼 Credendial reset for the '$dataverseAppRegistrationName' service principal completed!"
+} else {
+    Write-Warning "Error during credendial reset for the '$dataverseAppRegistrationName' service principal."
+}
+
+# Add application registration name as an environment variable to the default environment
+Write-Verbose "Add application registration name to the '.env' file of the default environment..."
+azd env set DATAVERSE_SERVICE_PRINCIPAL_NAME $dataverseAppRegistrationName
+Write-Verbose "👍🏼 Application registration name added to the '.env' file of the default environment!"
+
+# Add application registration id as an environment variable to the default environment
+Write-Verbose "Add application registration id to the '.env' file of the default environment..."
+azd env set DATAVERSE_CLIENT_ID $dataverseAppRegistrationId
+Write-Verbose "👍🏼 Application registration id added to the '.env' file of the default environment!"
+
+# Add service principal password as an environment variable to the default environment
+Write-Verbose "Add service principal password to the '.env' file of the default environment..."
+azd env set DATAVERSE_CLIENT_SECRET $dataverseServicePrincipalPassword
+Write-Verbose "👍🏼 Service principal password added to the '.env' file of the default environment!"
 
 #endregion Create a service principal to be assigned as an application user to the considered Dataverse environment
 
