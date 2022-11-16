@@ -27,13 +27,15 @@
 
 #region Variables initialization
 
-$azureEnvironmentsFolderBasePath = ".\.azure\"
+$azureEnvironmentsFolderBasePath = "..\.azure\"
 $azureEnvironmentsConfigurationFilePath = $azureEnvironmentsFolderBasePath + "config.json"
 $environmentConfigurationFileName = "\.env"
 
 $azureSubscriptionIdEnvironmentVariableName = "AZURE_SUBSCRIPTION_ID"
 
 $rolesToAssignOnAzureSubscription = @("Contributor", "User Access Administrator")
+
+$dataverseEnvironmentConfigurationFilePath = "..\.dataverse\environment-configuration.json"
 
 #endregion Variables initialization
 
@@ -72,12 +74,19 @@ try {
 
 # Azure CLI
 Write-Verbose "Checking Azure CLI connection status..."
-$azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
-$azureSignedInUserMail = $azureSignedInUser[1]
+$azureSignedInUserMail = ""
+try {
+    $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
+    $azureSignedInUserMail = $azureSignedInUser[1]
+} catch {
+    # Do nothing
+}
 
 if ([string]::IsNullOrEmpty($azureSignedInUserMail)) {
     Write-Verbose "No signed in user found for Azure CLI. Please login..."
-    $azureCliLoginResult = az login
+    $azureCliLoginResult = az login --use-device-code
+    $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
+    $azureSignedInUserMail = $azureSignedInUser[1]
 }
 
 Write-Verbose "👍🏼 Connected to Azure CLI!"
@@ -159,7 +168,7 @@ $response = Read-Host "Do you want to use this account for this operation? (Y/N)
 
 if (!($response.ToLower() -eq "y")) {
     Write-Host "Connection to Azure CLI with the account you want to use for this operation..."
-    $azureCliLoginResult = az login
+    $azureCliLoginResult = az login --use-device-code
     $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
     $azureSignedInUserMail = $azureSignedInUser[1]
 }
@@ -184,11 +193,15 @@ if (!($response.ToLower() -eq "y")) {
 $azureDeploymentAppRegistrationName = "sp-$azureDefaultEnvironmentName-azure"
 
 Write-Verbose "Checking if an '$azureDeploymentAppRegistrationName' app registration already exist..."
-$azureDeploymentAppRegistrationId = az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query [].appId --output tsv
+$azureDeploymentAppRegistrationListResult = az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[[].id, [].appId]' --output tsv
+$azureDeploymentAppRegistrationObjectId = $azureDeploymentAppRegistrationListResult[0]
+$azureDeploymentAppRegistrationId = $azureDeploymentAppRegistrationListResult[1]
 
 if ([string]::IsNullOrEmpty($azureDeploymentAppRegistrationId)) {
     Write-Verbose "No '$azureDeploymentAppRegistrationName' app registration found. Creating app registration..."
-    $azureDeploymentAppRegistrationId = az ad app create --display-name $azureDeploymentAppRegistrationName --query appId --output tsv
+    $azureDeploymentAppRegistrationCreationResult = az ad app create --display-name $azureDeploymentAppRegistrationName --query --query '[id, appId]' --output tsv
+    $azureDeploymentAppRegistrationObjectId = $azureDeploymentAppRegistrationCreationResult[0]
+    $azureDeploymentAppRegistrationId = $azureDeploymentAppRegistrationCreationResult[1]
     Write-Verbose "👍🏼 '$azureDeploymentAppRegistrationName' app registration created!"
 } else {
     Write-Verbose "Existing '$azureDeploymentAppRegistrationName' app registration found."
@@ -229,7 +242,7 @@ $response = Read-Host "Do you want to use this account for this operation? (Y/N)
 
 if (!($response.ToLower() -eq "y")) {
     Write-Host "Connection to Azure CLI with the account you want to use for this operation..."
-    $azureCliLoginResult = az login --allow-no-subscriptions
+    $azureCliLoginResult = az login --use-device-code --allow-no-subscriptions
     $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
     $azureSignedInUserMail = $azureSignedInUser[1]
 }
@@ -293,20 +306,48 @@ Write-Verbose "👍🏼 Service principal password added to the '.env' file of t
 $dataverseEnvironmentUrl = ""
 
 # Ask for the URL of the Dataverse environment to consider
-$response = Read-Host "Please, enter the URL of the Dataverse environment to consider. If you don't have an environment, just press enter so an environment can be created."
+$response = Read-Host "Please, enter the URL of the Dataverse environment to consider or just press enter so an environment can be created"
 
 if ([string]::IsNullOrEmpty($response)) {
-    Write-Host "Creation of a Dataverse environment with the following configuration..."
+    # Test the path provided to the file with the configurations
+    Write-Verbose "Test the path provided to the file with the configuration: $dataverseEnvironmentConfigurationFilePath"
+    $testPathResult = Test-Path $dataverseEnvironmentConfigurationFilePath
+    if(!$testPathResult) {
+        Write-Error -Message "Following path to configuration file not valid: $dataverseEnvironmentConfigurationFilePath" -ErrorAction Stop
+    }
+    
+    # Extract configuration from the file
+    Write-Verbose "Get content from file with the configurations in the following location: $dataverseEnvironmentConfigurationFilePath"
+    try {
+        $dataverseEnvironmentConfiguration = Get-Content $dataverseEnvironmentConfigurationFilePath -ErrorVariable getConfigurationError -ErrorAction Stop | ConvertFrom-Json
+    }
+    catch {
+        Write-Error -Message "Error in the extraction of the configuration from the considered file ($dataverseEnvironmentConfigurationFilePath): $getConfigurationError" -ErrorAction Stop
+    }
 
-    Write-Host "Key: Value"
+    $dataverseEnvironmentConfiguration
 
     $response = Read-Host "Are you OK with this configuration? (Y/N)"
 
     if (!($response.ToLower() -eq "y")) {
-        Write-Host "Please review and update the configurations in the 'Variables initialization' region of this script before re-running it."
+        Write-Host "Please review and update the configuration in the following file: $dataverseEnvironmentConfigurationFilePath"
     } else {
-        # pac admin create
+        $dataverseEnvironmentName = $dataverseEnvironmentConfiguration.namePrefix + $azureDefaultEnvironmentName
+        $dataverseEnvironmentDomain = $dataverseEnvironmentConfiguration.domainPrefix + $azureDefaultEnvironmentName.ToLower()
+        Write-Verbose "Create '$dataverseEnvironmentName' ($dataverseEnvironmentDomain) Dataverse environment..."
+        
+        $dataverseEnvironmentType = $dataverseEnvironmentConfiguration.type
+        $dataverseEnvironmentRegion = $dataverseEnvironmentConfiguration.region
+        $dataverseEnvironmentLanguage = $dataverseEnvironmentConfiguration.language
+        $dataverseEnvironmentCurrency = $dataverseEnvironmentConfiguration.currency
+        
+        $dataverseEnvironmentCreationResult = pac admin create --name "$dataverseEnvironmentName" --domain "$dataverseEnvironmentDomain" --type "$dataverseEnvironmentType" --region "$dataverseEnvironmentRegion" --language "$dataverseEnvironmentLanguage" --currency "$dataverseEnvironmentCurrency"
+
+        $dataverseEnvironmentCreationResultLineWithUrlSplitted = $dataverseEnvironmentCreationResult[5].split(" ")
+        $dataverseEnvironmentUrl = $dataverseEnvironmentCreationResultLineWithUrlSplitted[0]
     }
+} else {
+    $dataverseEnvironmentUrl = $response
 }
 
 # Add Dataverse environment URL as an environment variable to the default environment
