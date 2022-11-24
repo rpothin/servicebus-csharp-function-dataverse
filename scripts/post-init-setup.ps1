@@ -25,7 +25,7 @@
 
 #region Variables initialization
 
-$azureEnvironmentsFolderBasePath = "..\.azure\"
+$azureEnvironmentsFolderBasePath = "$PSScriptRoot\..\.azure\"
 $azureEnvironmentsConfigurationFilePath = $azureEnvironmentsFolderBasePath + "config.json"
 $environmentConfigurationFileName = "\.env"
 
@@ -33,7 +33,7 @@ $azureSubscriptionIdEnvironmentVariableName = "AZURE_SUBSCRIPTION_ID"
 
 $rolesToAssignOnAzureSubscription = @("Contributor", "User Access Administrator")
 
-$dataverseEnvironmentConfigurationFilePath = "..\.dataverse\environment-configuration.json"
+$dataverseEnvironmentConfigurationFilePath = "$PSScriptRoot\..\.dataverse\environment-configuration.json"
 
 $dataverseSecurityRoleNameForApplicationUser = "Service Reader"
 
@@ -97,7 +97,7 @@ $pacProfiles = pac auth list
 
 if ($pacProfiles -eq "No profiles were found on this computer. Please run 'pac auth create' to create one.") {
     Write-Verbose "No profile found for Power Platform CLI. Please create a profile..."
-    $powerPlatformCliAuthCreateResult = pac auth create
+    pac auth create --deviceCode
 }
 
 Write-Verbose "👍🏼 Connected to Power Platform CLI!"
