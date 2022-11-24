@@ -18,9 +18,7 @@
     .LINK
         https://github.com/rpothin/servicebus-csharp-function-dataverse
     .NOTES
-        This script:
-        - need to be exectuded at the root level of the "Azure Developer CLI" compatible folder
-        - will first run some validations then do the steps described in the "Description" section
+        This script will first run some validations then do the steps described in the "Description" section
 #>
 
 [CmdletBinding()] param ()
@@ -36,6 +34,8 @@ $azureSubscriptionIdEnvironmentVariableName = "AZURE_SUBSCRIPTION_ID"
 $rolesToAssignOnAzureSubscription = @("Contributor", "User Access Administrator")
 
 $dataverseEnvironmentConfigurationFilePath = "..\.dataverse\environment-configuration.json"
+
+$dataverseSecurityRoleNameForApplicationUser = "Service Reader"
 
 #endregion Variables initialization
 
@@ -194,16 +194,14 @@ $azureDeploymentAppRegistrationName = "sp-$azureDefaultEnvironmentName-azure"
 
 Write-Verbose "Checking if an '$azureDeploymentAppRegistrationName' app registration already exist..."
 $azureDeploymentAppRegistrationListResult = az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[[].id, [].appId]' --output tsv
-$azureDeploymentAppRegistrationObjectId = $azureDeploymentAppRegistrationListResult[0]
-$azureDeploymentAppRegistrationId = $azureDeploymentAppRegistrationListResult[1]
 
 if ([string]::IsNullOrEmpty($azureDeploymentAppRegistrationId)) {
     Write-Verbose "No '$azureDeploymentAppRegistrationName' app registration found. Creating app registration..."
-    $azureDeploymentAppRegistrationCreationResult = az ad app create --display-name $azureDeploymentAppRegistrationName --query --query '[id, appId]' --output tsv
-    $azureDeploymentAppRegistrationObjectId = $azureDeploymentAppRegistrationCreationResult[0]
+    $azureDeploymentAppRegistrationCreationResult = az ad app create --display-name $azureDeploymentAppRegistrationName --query '[id, appId]' --output tsv
     $azureDeploymentAppRegistrationId = $azureDeploymentAppRegistrationCreationResult[1]
     Write-Verbose "👍🏼 '$azureDeploymentAppRegistrationName' app registration created!"
 } else {
+    $azureDeploymentAppRegistrationId = $azureDeploymentAppRegistrationListResult[1]
     Write-Verbose "Existing '$azureDeploymentAppRegistrationName' app registration found."
 }
 
@@ -251,13 +249,15 @@ if (!($response.ToLower() -eq "y")) {
 $dataverseAppRegistrationName = "sp-$azureDefaultEnvironmentName-dataverse"
 
 Write-Verbose "Checking if an '$dataverseAppRegistrationName' app registration already exist..."
-$dataverseAppRegistrationId = az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query [].appId --output tsv
+$dataverseAppRegistrationListResult = az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query '[[].id, [].appId]' --output tsv
 
 if ([string]::IsNullOrEmpty($dataverseAppRegistrationId)) {
     Write-Verbose "No '$dataverseAppRegistrationName' app registration found. Creating app registration..."
-    $dataverseAppRegistrationId = az ad app create --display-name $dataverseAppRegistrationName --query appId --output tsv
+    $dataverseAppRegistrationCreationResult = az ad app create --display-name $dataverseAppRegistrationName --query '[id, appId]' --output tsv
+    $dataverseAppRegistrationId = $dataverseAppRegistrationCreationResult[1]
     Write-Verbose "👍🏼 '$dataverseAppRegistrationName' app registration created!"
 } else {
+    $dataverseAppRegistrationId = $dataverseAppRegistrationListResult[1]
     Write-Verbose "Existing '$dataverseAppRegistrationName' app registration found."
 }
 
@@ -281,7 +281,7 @@ $dataverseServicePrincipalPassword = $dataverseServicePrincipalCredentialResetRe
 if (![string]::IsNullOrEmpty($dataverseServicePrincipalPassword)) {
     Write-Verbose "👍🏼 Credendial reset for the '$dataverseAppRegistrationName' service principal completed!"
 } else {
-    Write-Warning "Error during credendial reset for the '$dataverseAppRegistrationName' service principal."
+    Write-Error -Message "Error during credendial reset for the '$dataverseAppRegistrationName' service principal." -ErrorAction Stop
 }
 
 # Add application registration name as an environment variable to the default environment
@@ -357,9 +357,14 @@ Write-Verbose "👍🏼 Dataverse environment URL added to the '.env' file of th
 
 #endregion Get Dataverse environment URL
 
-#region Assign service principal as an application user to the considered Dataverse environment
+#region Assign app registration as an application user to the considered Dataverse environment
 
-# Todo
-# Use pac admin assign-user command
+Write-Verbose "Assign '$dataverseAppRegistrationName' app registration to '$dataverseEnvironmentUrl' Dataverse environment"
+try {
+    pac admin assign-user --environment "$dataverseEnvironmentUrl" --user "$dataverseAppRegistrationId" --role "$dataverseSecurityRoleNameForApplicationUser" --application-user --async
+} catch {
+    Write-Error -Message "Error in app registration assignment to Dataverse environment" -ErrorAction Stop
+}
+Write-Verbose "👍🏼 App registration assigned to Dataverse environment!"
 
-#endregion Assign service principal as an application user to the considered Dataverse environment
+#endregion Assign app registration as an application user to the considered Dataverse environment
