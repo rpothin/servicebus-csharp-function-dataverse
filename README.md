@@ -106,6 +106,13 @@ pwsh scripts/post-init-setup.ps1
 # You can add "-verbose" to get more details regarding the execution
 ```
 
+> **Note**
+> This PowerShell script will:
+> - create an application registration in Azure AD for the Azure deployment from GitHub
+> - create an application registration in Azure AD for the communication from the Azure Functions application to the Power Platform / Dataverse environment
+> - offer to create a Power Platform / Dataverse environment based on the element in the [Dataverse environment configuration](./.dataverse/environment-configuration.json) file
+> - register the second application registration created in Azure AD as an application user in the considered Power Platform / Dataverse environment
+
 4. Run the following command to provision Azure resources, and deploy the application code
 
 ```powershell
@@ -148,37 +155,34 @@ If you find the documented traces it means the solution provided in this templat
 
 ### GitHub configuration
 
-By following the steps below you will configure the elements required to run the GitHub workflow to provision the Azure resources and deploy application code.
+Follow the steps below to configure the elements required to run the GitHub workflow to provision the Azure resources and deploy the Azure Functions application code.
 
 > **Note**
-> Configuration of a service principal in Azure, granting the access to your Azure subscription to it and configure the out-of-the-box environment variables as actions secrets in your GitHub repository (_AZURE_CREDENTIALS, AZURE_ENV_NAME, AZURE_LOCATION and AZURE_SUBSCRIPTION_ID_)
+> The considered service principal will need to have the following permissions ont the considered Azure subscription:
+> - [Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#contributor)
+> - [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) - _for the configuration of the access of the Azure Functions application to the Azure Service Bus_
 
-In your workspace linked to a GitHub repository:
+> **Note**
+> If you ran the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script, you can considered the value of the `AZURE_SERVICE_PRINCIPAL_NAME` environment variable.
 
-1. Configure a service principal in Azure and grant the `Contributor` role to your Azure subscription to it
-
-```powershell
-azd pipeline config --provider GitHub # If you already have a service principal you can add the --principal-name parameter
-```
-
-2. Add the `` role to your Azure subscription to the service principal (_name in the output of the previous command if not provided initially_)
+In your workspace linked to a GitHub repository execute the command below:
 
 ```powershell
-azd pipeline config --provider GitHub --principal-name "az-dev-..." --principal-role "User Access Administrator"
+azd pipeline config --provider GitHub --principal-name <service principal name>
 ```
 
-3. Set the actions secrets associated to the custom environment variables using the command below
+Set the actions secrets associated to the custom environment variables using the command below
 
 ```powershell
 # Paste secret value for the current repository in an interactive prompt
 gh secret set <secret name>
 ```
 
-| **Secret Name**         | **Description**                                                                                                                                                |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| DATAVERSE_ENV_URL       | URL of the considered Dataverse / Power Platform environment                                                                                                   |
-| DATAVERSE_CLIENT_ID     | Client ID of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment |
-| DATAVERSE_CLIENT_SECRET | Secret of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment    |
+| **Secret Name**         | **Description**                                                                                                                                                                                                                                                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DATAVERSE_ENV_URL       | URL of the considered Dataverse / Power Platform environment configured in the Key Vault during Azure infrastructure deployment for the communication from the Azure Functions application to the Power Platform / Dataverse environment                                                                                                   |
+| DATAVERSE_CLIENT_ID     | Client ID of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment configured in the Key Vault during Azure infrastructure deployment for the communication from the Azure Functions application to the Power Platform / Dataverse environment |
+| DATAVERSE_CLIENT_SECRET | Secret of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment configured in the Key Vault during Azure infrastructure deployment for the communication from the Azure Functions application to the Power Platform / Dataverse environment    |
 
 ### Architecture
 
