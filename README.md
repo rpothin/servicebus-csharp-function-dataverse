@@ -239,5 +239,5 @@ All files in this repository are subject to the [MIT](LICENSE) license.
 
 We would like to thank the open-source projects below that helped us find some ideas on how to organize this project.
 
-- [Azure-Samples/todo-csharp-cosmos-sql](https://github.com/Azure-Samples/todo-csharp-cosmos-sql) & all the other great Azure Developer CLI templates in this organization
+- [Azure-Samples/todo-csharp-cosmos-sql](https://github.com/Azure-Samples/todo-csharp-cosmos-sql) & all the other [great Azure Developer CLI templates](https://azure.github.io/awesome-azd/)
 - [Gordonby/servicebus-dotnet-functionapp](https://github.com/Gordonby/servicebus-dotnet-functionapp)
