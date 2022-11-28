@@ -43,11 +43,9 @@ It contains components (GitHub workflow, Azure DevOps pipeline, infrastructure a
 
 ### Prerequisites
 
-#### Azure
-
 The following prerequisites are required to use this solution. Please ensure that you have them all installed locally.
 
-- [Git (2.36.1+)](https://git-scm.com/)
+- [Git](https://git-scm.com/)
 - [GitHub CLI (v2.3+)](https://github.com/cli/cli)
 - [Azure CLI (2.38.0+)](https://docs.microsoft.com/cli/azure/install-azure-cli)
 - [Azure Developer CLI](https://aka.ms/azure-dev/install)
@@ -62,31 +60,19 @@ curl -fsSL https://aka.ms/install-azd.sh | bash
 
 - [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) - _for the Azure Functions app code_
 
-You will also need an Azure account with an active subscription (_you can also [create one for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) to start exploring_).
-
-To be able to configure the solution you will need at least the roles below on the considered Azure subscription:
-- [Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#contributor)
-- [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) - *for the configuration of the access of the Azure Functions app to the Azure Service Bus*
-
-#### Dataverse
-
-First you will need to have a Dataverse / Power Platform environment. To do that, you can choose one of the option below:
-
-- [From the Power Platform Administration Center](https://learn.microsoft.com/en-us/power-platform/admin/create-environment#create-an-environment-with-a-database)
-- [Using the Power Platform CLI](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/admin#pac-admin-create)
-- [Starting free with a Power Apps Developer Plan](https://powerapps.microsoft.com/en-us/developerplan/)
+- an account with access to an active Azure subscription (_you can also [create one for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) to start exploring_).
 
 > **Note**
-> You will need the URL of your Dataverse / Power Platform environment (_available in the `Overview` page_) in the configuration of some custom environment variables.
+> To be able to configure the solution you will need at least the roles below on the considered Azure subscription:
+>
+> - [Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#contributor)
+> - [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) - _for the configuration of the access of the Azure Functions app to the Azure Service Bus_
 
-Then you will need to configure an application user on your environment by:
-
-1. [Register an application in Azure AD](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application)
-2. [Add a client secret to your Azure AD app registration](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-client-secret)
-3. [Add you Azure AD app registration as an application user to your Dataverse / Power Platform environment](https://learn.microsoft.com/en-us/power-platform/admin/manage-application-users#create-an-application-user)
+- an account with the permissions to create app registrations / service principals in Azure AD
+- an account with access to Power Platform with an environment available or the permissions to create one
 
 > **Note**
-> You will need the Azure AD app registration client ID (_available in the `Overview` page_) and its client secret value in the configuration of some custom environment variables.
+> These operations (_app registrations / service principals and Power Platform environment creation_) will be done through the execution of the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script.
 
 ### Quickstart
 
@@ -105,17 +91,17 @@ You will be prompted for the following information:
 - `Azure Location`: The Azure location where your resources will be deployed.
 - `Azure Subscription`: The Azure Subscription where your resources will be deployed.
 
-3. Run the following command to set the required custom environment variables
+3. Run the following command to finalize the initialization of the project
 
 ```powershell
-azd env set <key> <value>
-```
+# For Windows
+.\scripts\post-init-setup.ps1
 
-| **Key**                 | **Description**                                                                                                                                        |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| DATAVERSE_ENV_URL       | URL of the considered Dataverse / Power Platform environment                                                                                           |
-| DATAVERSE_CLIENT_ID     | Client ID of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment |
-| DATAVERSE_CLIENT_SECRET | Secret of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment    |
+# For Linux/MacOS
+pwsh scripts/post-init-setup.ps1
+
+# You can add "-verbose" to get more details regarding the execution
+```
 
 4. Run the following command to provision Azure resources, and deploy the application code
 
@@ -131,12 +117,29 @@ When `azd up` is complete it will output the following URLs:
 - Azure Portal link to view resources
 - Azure Functions application
 
+#### Custom environment variables
+
+| **Key**                          | **Description**                                                                                                                                                                                                                                                        |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DATAVERSE_ENV_URL                | URL of the considered Dataverse / Power Platform environment                                                                                                                                                                                                           |
+| DATAVERSE_CLIENT_ID              | Client ID of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment                                                                                                                 |
+| DATAVERSE_CLIENT_SECRET          | Secret of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment                                                                                                                    |
+| AZURE_SERVICE_PRINCIPAL_NAME     | Name of the application registration / service principal created in Azure AD running the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script to manage Azure deployment from GitHub                                                                 |
+| DATAVERSE_SERVICE_PRINCIPAL_NAME | Name of the application registration / service principal created in Azure AD running the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script to manage the communication from the Azure Functions app to the Power Platform / Dataverse environment |
+
 #### Test the solution
 
-1. Push a message in the `dataverse-inbound` queue (_configured in the [**main.parameters.json**](./infra/main.parameters.json) file_) - for example, you can do it directly from the queue in Azure Portal using the [**Service Bus Explorer**](https://learn.microsoft.com/en-us/azure/service-bus-messaging/explorer) feature
-2. In Application Insights, go to the **Transaction Search** page and check if you have the traces below:
-   - `C# ServiceBus queue trigger function processed message`
-   - `Logged on user id`
+To test the solution, you can manually push a message in the `dataverse-inbound` queue (_configured in the [**main.parameters.json**](./infra/main.parameters.json) file_) - for example, you can do it directly from the queue in Azure Portal using the [**Service Bus Explorer**](https://learn.microsoft.com/en-us/azure/service-bus-messaging/explorer) feature.
+
+To validate the consumption of the message you can:
+
+- open the Azure Functions resource, go to the **ProcessServiceBusMessage** function and check the runs in the **Monitor** section
+- open the Application Insights resource, go to the **Transaction Search**
+
+In both places above you should see the traces below:
+
+- `C# ServiceBus queue trigger function processed message`
+- `Logged on user id`
 
 If you find the documented traces it means the solution provided in this template is working.
 
