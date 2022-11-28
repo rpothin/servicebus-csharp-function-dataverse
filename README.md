@@ -122,13 +122,13 @@ When `azd up` is complete it will output the following URLs:
 
 #### Custom environment variables
 
-| **Key**                          | **Description**                                                                                                                                                                                                                                                                |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| DATAVERSE_ENV_URL                | URL of the considered Dataverse / Power Platform environment                                                                                                                                                                                                                   |
-| DATAVERSE_CLIENT_ID              | Client ID of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment                                                                                                                         |
-| DATAVERSE_CLIENT_SECRET          | Secret of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment                                                                                                                            |
-| AZURE_SERVICE_PRINCIPAL_NAME     | Name of the application registration / service principal created in Azure AD running the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script to manage Azure deployment from GitHub                                                                         |
-| DATAVERSE_SERVICE_PRINCIPAL_NAME | Name of the application registration / service principal created in Azure AD running the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script to manage the communication from the Azure Functions application to the Power Platform / Dataverse environment |
+| **Key**                          | **Description**                                                                                                                                                                                                                                                                                                                            |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DATAVERSE_ENV_URL                | URL of the considered Dataverse / Power Platform environment configured in the Key Vault during Azure infrastructure deployment for the communication from the Azure Functions application to the Power Platform / Dataverse environment                                                                                                   |
+| DATAVERSE_CLIENT_ID              | Client ID of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment configured in the Key Vault during Azure infrastructure deployment for the communication from the Azure Functions application to the Power Platform / Dataverse environment |
+| DATAVERSE_CLIENT_SECRET          | Secret of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment configured in the Key Vault during Azure infrastructure deployment for the communication from the Azure Functions application to the Power Platform / Dataverse environment    |
+| AZURE_SERVICE_PRINCIPAL_NAME     | Name of the application registration / service principal to manage Azure deployment from GitHub                                                                                                                                                                                                                                            |
+| DATAVERSE_SERVICE_PRINCIPAL_NAME | Name of the application registration / service principal to manage the communication from the Azure Functions application to the Power Platform / Dataverse environment                                                                                                                                                                    |
 
 #### Test the solution
 
@@ -174,9 +174,9 @@ azd pipeline config --provider GitHub --principal-name "az-dev-..." --principal-
 gh secret set <secret name>
 ```
 
-| **Secret Name**         | **Description**                                                                                                                                        |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| DATAVERSE_ENV_URL       | URL of the considered Dataverse / Power Platform environment                                                                                           |
+| **Secret Name**         | **Description**                                                                                                                                                |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DATAVERSE_ENV_URL       | URL of the considered Dataverse / Power Platform environment                                                                                                   |
 | DATAVERSE_CLIENT_ID     | Client ID of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment |
 | DATAVERSE_CLIENT_SECRET | Secret of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment    |
 
