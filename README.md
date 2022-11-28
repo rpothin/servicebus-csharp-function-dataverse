@@ -3,7 +3,7 @@
         Azure Developer CLI Template - rpothin/servicebus-csharp-function-dataverse
     </h1>
     <h3 align="center">
-        Application to process messages from an Azure Service Bus to a Dataverse environment through a C# Azure Functions app using the Microsoft.PowerPlatform.Dataverse.Client package.
+        Application to process messages from an Azure Service Bus to a Dataverse environment through a C# Azure Functions application using the Microsoft.PowerPlatform.Dataverse.Client package.
     </h3>
 </p>
 
@@ -37,13 +37,16 @@
 
 It is a GitHub repository using the [**Azure Developer CLI**](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview) to get you up and running on Azure quickly in a scenario where you need to process messages from an Azure Service Bus to a Dataverse environment through a C# Azure Functions app.
 
-It contains components (GitHub workflow, Azure DevOps pipeline, infrastructure as code in Bicep, C# Azure Functions app code...) that will help you be up and running quickly.
+It contains components (infrastructure as code in Bicep, C# Azure Functions application code...) that will help you be up and running quickly.
 
 ## 📖 Documentation
 
 ### Prerequisites
 
-The following prerequisites are required to use this solution. Please ensure that you have them all installed locally.
+> **Note**
+> If you plan to use a devcontainer definiton, like for [GitHub Codespaces](https://github.com/features/codespaces), the one included in this repository contains all the things you will need to start working with this template.
+
+The following prerequisites are required to use this solution. Please ensure that you checked all these points before starting.
 
 - [Git](https://git-scm.com/)
 - [GitHub CLI (v2.3+)](https://github.com/cli/cli)
@@ -58,21 +61,21 @@ powershell -ex AllSigned -c "Invoke-RestMethod 'https://aka.ms/install-azd.ps1' 
 curl -fsSL https://aka.ms/install-azd.sh | bash
 ```
 
-- [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) - _for the Azure Functions app code_
+- [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) - _for the Azure Functions application code_
 
-- an account with access to an active Azure subscription (_you can also [create one for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) to start exploring_).
+- an account with access to an active Azure subscription (_you can also [create one for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) to start exploring_) and the permission to create an application registration in Azure AD to manage the Azure deployment from GitHub
 
 > **Note**
 > To be able to configure the solution you will need at least the roles below on the considered Azure subscription:
->
 > - [Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#contributor)
-> - [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) - _for the configuration of the access of the Azure Functions app to the Azure Service Bus_
+> - [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) - _for the configuration of the access of the Azure Functions application to the Azure Service Bus_
 
-- an account with the permissions to create app registrations / service principals in Azure AD
-- an account with access to Power Platform with an environment available or the permissions to create one
+- an account with access to Power Platform with
+   - an environment available or the permissions to create one
+   - the permission to create an application registration in Azure AD to manage the communication from the Azure Functions application to the environment
 
 > **Note**
-> These operations (_app registrations / service principals and Power Platform environment creation_) will be done through the execution of the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script.
+> The creation of application registrations in Azure AD and the Power Platform environment will be done through the execution of the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script.
 
 ### Quickstart
 
@@ -119,13 +122,13 @@ When `azd up` is complete it will output the following URLs:
 
 #### Custom environment variables
 
-| **Key**                          | **Description**                                                                                                                                                                                                                                                        |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| DATAVERSE_ENV_URL                | URL of the considered Dataverse / Power Platform environment                                                                                                                                                                                                           |
-| DATAVERSE_CLIENT_ID              | Client ID of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment                                                                                                                 |
-| DATAVERSE_CLIENT_SECRET          | Secret of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment                                                                                                                    |
-| AZURE_SERVICE_PRINCIPAL_NAME     | Name of the application registration / service principal created in Azure AD running the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script to manage Azure deployment from GitHub                                                                 |
-| DATAVERSE_SERVICE_PRINCIPAL_NAME | Name of the application registration / service principal created in Azure AD running the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script to manage the communication from the Azure Functions app to the Power Platform / Dataverse environment |
+| **Key**                          | **Description**                                                                                                                                                                                                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DATAVERSE_ENV_URL                | URL of the considered Dataverse / Power Platform environment                                                                                                                                                                                                                   |
+| DATAVERSE_CLIENT_ID              | Client ID of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment                                                                                                                         |
+| DATAVERSE_CLIENT_SECRET          | Secret of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment                                                                                                                            |
+| AZURE_SERVICE_PRINCIPAL_NAME     | Name of the application registration / service principal created in Azure AD running the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script to manage Azure deployment from GitHub                                                                         |
+| DATAVERSE_SERVICE_PRINCIPAL_NAME | Name of the application registration / service principal created in Azure AD running the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script to manage the communication from the Azure Functions application to the Power Platform / Dataverse environment |
 
 #### Test the solution
 
@@ -174,8 +177,8 @@ gh secret set <secret name>
 | **Secret Name**         | **Description**                                                                                                                                        |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | DATAVERSE_ENV_URL       | URL of the considered Dataverse / Power Platform environment                                                                                           |
-| DATAVERSE_CLIENT_ID     | Client ID of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment |
-| DATAVERSE_CLIENT_SECRET | Secret of the Azure AD app registration configured as an application user with permissions in the considered Dataverse / Power Platform environment    |
+| DATAVERSE_CLIENT_ID     | Client ID of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment |
+| DATAVERSE_CLIENT_SECRET | Secret of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment    |
 
 ### Architecture
 
@@ -193,7 +196,7 @@ graph TB
     end
 
     subgraph Azure Monitor
-        ai(App Insights)
+        ai(application Insights)
         la(Log Analytics workspace)
         sbTrigger-->|Message and logged in user id|ai
         ai-->la
