@@ -168,7 +168,7 @@ Follow the steps below to configure the elements required to run the GitHub work
 In your workspace linked to a GitHub repository execute the command below:
 
 ```powershell
-azd pipeline config --provider GitHub --principal-name <service principal name>
+azd pipeline config --principal-name <service principal name>
 ```
 
 Set the actions secrets associated to the custom environment variables using the command below
