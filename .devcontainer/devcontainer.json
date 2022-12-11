@@ -26,6 +26,6 @@
         3000,
         3100
     ],
-    "postCreateCommand": "",
+    "postCreateCommand": "az extension add --name account --upgrade --yes",
     "remoteUser": "vscode"
 }
