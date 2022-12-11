@@ -127,6 +127,9 @@ pwsh scripts/post-init-setup.ps1
 
 4. Run the following command to provision Azure resources, and deploy the application code
 
+> **Note**
+> If you use 2 different accounts for the configuration of the Azure and Power Platform part, you will need to connect again with your "Azure" account before running the following command. You can do that using the `az login --use-device-code` command.
+
 ```powershell
 azd up
 ```
