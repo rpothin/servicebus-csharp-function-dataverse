@@ -83,7 +83,7 @@ try {
 }
 
 if ([string]::IsNullOrEmpty($azureSignedInUserMail)) {
-    Write-Verbose "No signed in user found for Azure CLI. Please login..."
+    Write-Host "No signed in user found for Azure CLI. Please login..." -ForegroundColor Blue
     $azureCliLoginResult = az login --use-device-code
     $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
     $azureSignedInUserMail = $azureSignedInUser[1]
@@ -96,7 +96,7 @@ Write-Verbose "Checking Power Platform CLI connection status..."
 $pacProfiles = pac auth list
 
 if ($pacProfiles -eq "No profiles were found on this computer. Please run 'pac auth create' to create one.") {
-    Write-Verbose "No profile found for Power Platform CLI. Please create a profile..."
+    Write-Host "No profile found for Power Platform CLI. Please create a profile..." -ForegroundColor Blue
     pac auth create --deviceCode
 }
 
@@ -109,7 +109,7 @@ Write-Verbose "👍🏼 Connected to Power Platform CLI!"
 # Validate there is a 'config.json' file under a '.azure' folder
 Write-Verbose "Checking the presence of a 'config.json' file under a '.azure' folder..."
 if (!(Test-Path $azureEnvironmentsConfigurationFilePath)) {
-    Write-Verbose "No 'config.json' file found under a '.azure' folder. Please configure an environment..."
+    Write-Host "No 'config.json' file found under a '.azure' folder. Please configure an environment..." -ForegroundColor Blue
     azd env new
 }
 
