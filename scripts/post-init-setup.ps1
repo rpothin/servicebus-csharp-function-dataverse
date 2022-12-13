@@ -47,7 +47,7 @@ try {
     $azureCliVersion = az version
     Write-Verbose "👍🏼 Azure CLI is installed!"
 } catch {
-    Write-Error -Message "Error checking if Azure CLI is installed" -ErrorAction Stop
+    Write-Error -Message "Azure CLI does not seem installed. Please install it to continue: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli" -ErrorAction Stop
 }
 
 # Azure Developer CLI - https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview
@@ -56,7 +56,7 @@ try {
     $azureDeveloperCliVersion = azd version
     Write-Verbose "👍🏼 Azure Developer CLI is installed!"
 } catch {
-    Write-Error -Message "Error checking if Azure Developer CLI is installed" -ErrorAction Stop
+    Write-Error -Message "Azure Developer CLI does not seem installed. Please install it to continue: https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd" -ErrorAction Stop
 }
 
 # Power Platform CLI -https://learn.microsoft.com/en-us/power-platform/developer/cli/introduction
@@ -65,7 +65,7 @@ try {
     $powerPlatformCliVersion = pac help
     Write-Verbose "👍🏼 Power Platform CLI is installed!"
 } catch {
-    Write-Error -Message "Error checking if Power Platform CLI is installed" -ErrorAction Stop
+    Write-Error -Message "Power Platform CLI does not seem installed. Please install it to continue: https://learn.microsoft.com/en-us/power-platform/developer/cli/introduction#install-power-platform-cli-for-windows" -ErrorAction Stop
 }
 
 #endregion Validate that the required CLI are installed
