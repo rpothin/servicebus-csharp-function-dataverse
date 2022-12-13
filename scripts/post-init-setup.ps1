@@ -131,7 +131,7 @@ if ([string]::IsNullOrWhiteSpace($response)) {
 }
 
 if (!($response.ToLower() -eq "y")) {
-    Write-Host "Use the 'azd env select' command to set the default environment you'd like to use and re-run this script."
+    Write-Host "Use the 'azd env select' command to set the default environment you'd like to use and re-run this script." -ForegroundColor Yellow
     Exit
 }
 
@@ -193,7 +193,7 @@ if ([string]::IsNullOrWhiteSpace($response)) {
 }
 
 if (!($response.ToLower() -eq "y")) {
-    Write-Host "Use the 'azd env set' command to set the Azure subscription you'd like to use with the default environment and re-run this script."
+    Write-Host "Use the 'azd env set' command to set the Azure subscription you'd like to use with the default environment and re-run this script." -ForegroundColor Yellow
     Exit
 }
 
@@ -350,7 +350,7 @@ if ([string]::IsNullOrWhiteSpace($response)) {
 }
 
     if (!($response.ToLower() -eq "y")) {
-        Write-Host "Please review and update the configuration in the following file: $dataverseEnvironmentConfigurationFilePath"
+        Write-Host "Please review and update the configuration in the following file: $dataverseEnvironmentConfigurationFilePath" -ForegroundColor Yellow
         Exit
     } else {
         $dataverseEnvironmentName = $dataverseEnvironmentConfiguration.namePrefix + $azureDefaultEnvironmentName
