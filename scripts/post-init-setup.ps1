@@ -124,7 +124,11 @@ try {
 
 Write-Host "Default environment: $azureDefaultEnvironmentName" -ForegroundColor Blue
 
-$response = Read-Host "Do you want to use the above environment? (Y/N)"
+$response = Read-Host "Do you want to use the above environment? (Y/n)"
+
+if ([string]::IsNullOrWhiteSpace($response)) {
+    $response = "Y"
+}
 
 if (!($response.ToLower() -eq "y")) {
     Write-Host "Use the 'azd env select' command to set the default environment you'd like to use and re-run this script."
@@ -164,7 +168,11 @@ try {
 
 # Validate the account to use for the configuration of the considered Azure subscription
 Write-Host "Account considered for the configuration of the considered Azure subscription: $azureSignedInUserMail" -ForegroundColor Blue
-$response = Read-Host "Do you want to use this account for this operation? (Y/N)"
+$response = Read-Host "Do you want to use this account for this operation? (Y/n)"
+
+if ([string]::IsNullOrWhiteSpace($response)) {
+    $response = "Y"
+}
 
 if (!($response.ToLower() -eq "y")) {
     Write-Host "Connection to Azure CLI with the account you want to use for this operation..."
@@ -178,7 +186,11 @@ $azureDefaultEnvironmentSubscriptionDisplayName = az account subscription show -
 
 Write-Host "Default environment Azure subscription ID: '$azureDefaultEnvironmentSubscriptionDisplayName' ($azureDefaultEnvironmentSubscriptionId)" -ForegroundColor Blue
 
-$response = Read-Host "Do you want to use the above Azure subscription? (Y/N)"
+$response = Read-Host "Do you want to use the above Azure subscription? (Y/n)"
+
+if ([string]::IsNullOrWhiteSpace($response)) {
+    $response = "Y"
+}
 
 if (!($response.ToLower() -eq "y")) {
     Write-Host "Use the 'azd env set' command to set the Azure subscription you'd like to use with the default environment and re-run this script."
@@ -236,7 +248,11 @@ Write-Verbose "👍🏼 Service principal name added to the '.env' file of the d
 
 # Validate the account to use for the creation of the service principal to manage the integration with the Dataverse environment
 Write-Host "Account considered for creation of the service principal to manage the integration with the Dataverse environment: $azureSignedInUserMail" -ForegroundColor Blue
-$response = Read-Host "Do you want to use this account for this operation? (Y/N)"
+$response = Read-Host "Do you want to use this account for this operation? (Y/n)"
+
+if ([string]::IsNullOrWhiteSpace($response)) {
+    $response = "Y"
+}
 
 if (!($response.ToLower() -eq "y")) {
     Write-Host "Connection to Azure CLI with the account you want to use for this operation..."
@@ -327,7 +343,11 @@ if ([string]::IsNullOrEmpty($response)) {
 
     $dataverseEnvironmentConfiguration
 
-    $response = Read-Host "Are you OK with this configuration? (Y/N)"
+    $response = Read-Host "Are you OK with this configuration? (Y/n)"
+
+if ([string]::IsNullOrWhiteSpace($response)) {
+    $response = "Y"
+}
 
     if (!($response.ToLower() -eq "y")) {
         Write-Host "Please review and update the configuration in the following file: $dataverseEnvironmentConfigurationFilePath"
