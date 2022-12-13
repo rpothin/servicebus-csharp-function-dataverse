@@ -351,6 +351,7 @@ if ([string]::IsNullOrWhiteSpace($response)) {
 
     if (!($response.ToLower() -eq "y")) {
         Write-Host "Please review and update the configuration in the following file: $dataverseEnvironmentConfigurationFilePath"
+        Exit
     } else {
         $dataverseEnvironmentName = $dataverseEnvironmentConfiguration.namePrefix + $azureDefaultEnvironmentName
         $dataverseEnvironmentDomain = $dataverseEnvironmentConfiguration.domainPrefix + $azureDefaultEnvironmentName.ToLower()
