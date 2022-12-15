@@ -345,9 +345,9 @@ if ([string]::IsNullOrEmpty($response)) {
 
     $response = Read-Host "Are you OK with this configuration? (Y/n)"
 
-if ([string]::IsNullOrWhiteSpace($response)) {
-    $response = "Y"
-}
+    if ([string]::IsNullOrWhiteSpace($response)) {
+        $response = "Y"
+    }
 
     if (!($response.ToLower() -eq "y")) {
         Write-Host "Please review and update the configuration in the following file: $dataverseEnvironmentConfigurationFilePath" -ForegroundColor Yellow
