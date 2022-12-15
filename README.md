@@ -62,6 +62,7 @@ curl -fsSL https://aka.ms/install-azd.sh | bash
 ```
 
 - [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) - _for the Azure Functions application code_
+- [Power Platform CLI](https://learn.microsoft.com/en-us/power-platform/developer/cli/introduction#install-microsoft-power-platform-cli) - _for the configuration of the Power Platform environment throught the execution of the [post-init-setup](./scripts/post-init-setup.ps1) PowerShell script_
 
 > **Note**
 > The configuration of the Azure and Power Platform parts can be done with 2 different accounts in 2 different tenants.
