@@ -207,7 +207,7 @@ $azureDeploymentAppRegistrationName = "sp-$azureDefaultEnvironmentName-azure"
 Write-Verbose "Checking if an '$azureDeploymentAppRegistrationName' app registration already exist..."
 $azureDeploymentAppRegistrationListResult = az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[[].id, [].appId]' --output tsv
 
-if ([string]::IsNullOrEmpty($azureDeploymentAppRegistrationId)) {
+if ([string]::IsNullOrEmpty($azureDeploymentAppRegistrationListResult)) {
     Write-Verbose "No '$azureDeploymentAppRegistrationName' app registration found. Creating app registration..."
     $azureDeploymentAppRegistrationCreationResult = az ad app create --display-name $azureDeploymentAppRegistrationName --query '[id, appId]' --output tsv
     $azureDeploymentAppRegistrationId = $azureDeploymentAppRegistrationCreationResult[1]
@@ -267,7 +267,7 @@ $dataverseAppRegistrationName = "sp-$azureDefaultEnvironmentName-dataverse"
 Write-Verbose "Checking if an '$dataverseAppRegistrationName' app registration already exist..."
 $dataverseAppRegistrationListResult = az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query '[[].id, [].appId]' --output tsv
 
-if ([string]::IsNullOrEmpty($dataverseAppRegistrationId)) {
+if ([string]::IsNullOrEmpty($dataverseAppRegistrationListResult)) {
     Write-Verbose "No '$dataverseAppRegistrationName' app registration found. Creating app registration..."
     $dataverseAppRegistrationCreationResult = az ad app create --display-name $dataverseAppRegistrationName --query '[id, appId]' --output tsv
     $dataverseAppRegistrationId = $dataverseAppRegistrationCreationResult[1]
@@ -366,6 +366,12 @@ if ([string]::IsNullOrEmpty($response)) {
 
         $dataverseEnvironmentCreationResultLineWithUrlSplitted = $dataverseEnvironmentCreationResult[5].split(" ")
         $dataverseEnvironmentUrl = $dataverseEnvironmentCreationResultLineWithUrlSplitted[0]
+
+        # Catch potential error in the creation of the Power Platform environment
+        if ($dataverseEnvironmentUrl.Contains("Error")) {
+            $dataverseEnvironmentCreationResult
+            Write-Error -Message "Error in Power Platform environment creation." -ErrorAction Stop
+        }
     }
 } else {
     $dataverseEnvironmentUrl = $response
@@ -381,11 +387,16 @@ Write-Verbose "👍🏼 Dataverse environment URL added to the '.env' file of th
 #region Assign app registration as an application user to the considered Dataverse environment
 
 Write-Verbose "Assign '$dataverseAppRegistrationName' app registration to '$dataverseEnvironmentUrl' Dataverse environment"
-try {
-    pac admin assign-user --environment "$dataverseEnvironmentUrl" --user "$dataverseAppRegistrationId" --role "$dataverseSecurityRoleNameForApplicationUser" --application-user --async
-} catch {
-    Write-Error -Message "Error in app registration assignment to Dataverse environment" -ErrorAction Stop
+$appUserAssignmentResult = pac admin assign-user --environment "$dataverseEnvironmentUrl" --user "$dataverseAppRegistrationId" --role "$dataverseSecurityRoleNameForApplicationUser" --application-user --async
+
+$appUserAssignmentResultFocus = $appUserAssignmentResult[3]
+
+# Catch potential error in the assignation of the service principal to the Power Platform environment
+if ($appUserAssignmentResultFocus.Contains("Error")) {
+    $appUserAssignmentResult
+    Write-Error -Message "Error in app registration assignment to Dataverse environment." -ErrorAction Stop
 }
+
 Write-Verbose "👍🏼 App registration assigned to Dataverse environment!"
 
 #endregion Assign app registration as an application user to the considered Dataverse environment
