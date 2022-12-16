@@ -43,28 +43,31 @@ $dataverseSecurityRoleNameForApplicationUser = "Service Reader"
 
 # Azure CLI - https://learn.microsoft.com/en-us/cli/azure/
 Write-Verbose "Checking if Azure CLI is installed..."
-try {
-    $azureCliVersion = az version
+$azureCliVersion = az version
+
+if ($?) {
     Write-Verbose "👍🏼 Azure CLI is installed!"
-} catch {
+} else {
     Write-Error -Message "Azure CLI does not seem installed. Please install it to continue: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli" -ErrorAction Stop
 }
 
 # Azure Developer CLI - https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview
 Write-Verbose "Checking if Azure Developer CLI is installed..."
-try {
-    $azureDeveloperCliVersion = azd version
+$azureDeveloperCliVersion = azd version
+
+if ($?) {
     Write-Verbose "👍🏼 Azure Developer CLI is installed!"
-} catch {
+} else {
     Write-Error -Message "Azure Developer CLI does not seem installed. Please install it to continue: https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd" -ErrorAction Stop
 }
 
 # Power Platform CLI -https://learn.microsoft.com/en-us/power-platform/developer/cli/introduction
 Write-Verbose "Checking if Power Platform CLI is installed..."
-try {
-    $powerPlatformCliVersion = pac help
+$powerPlatformCliVersion = pac help
+
+if ($?) {
     Write-Verbose "👍🏼 Power Platform CLI is installed!"
-} catch {
+} else {
     Write-Error -Message "Power Platform CLI does not seem installed. Please install it to continue: https://learn.microsoft.com/en-us/power-platform/developer/cli/introduction#install-power-platform-cli-for-windows" -ErrorAction Stop
 }
 
@@ -85,8 +88,13 @@ try {
 if ([string]::IsNullOrEmpty($azureSignedInUserMail)) {
     Write-Host "No signed in user found for Azure CLI. Please login..." -ForegroundColor Blue
     $azureCliLoginResult = az login --use-device-code
-    $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
-    $azureSignedInUserMail = $azureSignedInUser[1]
+    
+    try {
+        $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
+        $azureSignedInUserMail = $azureSignedInUser[1]
+    } catch {
+        Write-Error -Message "Error while trying to get the email of the user connected to Azure CLI." -ErrorAction Stop
+    }
 }
 
 Write-Verbose "👍🏼 Connected to Azure CLI!"
@@ -177,12 +185,21 @@ if ([string]::IsNullOrWhiteSpace($response)) {
 if (!($response.ToLower() -eq "y")) {
     Write-Host "Connection to Azure CLI with the account you want to use for this operation..."
     $azureCliLoginResult = az login --use-device-code
-    $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
-    $azureSignedInUserMail = $azureSignedInUser[1]
+    
+    try {
+        $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
+        $azureSignedInUserMail = $azureSignedInUser[1]
+    } catch {
+        Write-Error -Message "Error while trying to get the email of the user connected to Azure CLI." -ErrorAction Stop
+    }
 }
 
 # Get the name of the Azure subscription configured for the default environment
 $azureDefaultEnvironmentSubscriptionDisplayName = az account subscription show --id $azureDefaultEnvironmentSubscriptionId --query 'displayName' --output tsv
+
+if (!$?) {
+    Write-Error -Message "Error while trying to get the name of the Azure subscription with the following ID: $azureDefaultEnvironmentSubscriptionId" -ErrorAction Stop
+}
 
 Write-Host "Default environment Azure subscription ID: '$azureDefaultEnvironmentSubscriptionDisplayName' ($azureDefaultEnvironmentSubscriptionId)" -ForegroundColor Blue
 
@@ -207,9 +224,18 @@ $azureDeploymentAppRegistrationName = "sp-$azureDefaultEnvironmentName-azure"
 Write-Verbose "Checking if an '$azureDeploymentAppRegistrationName' app registration already exist..."
 $azureDeploymentAppRegistrationListResult = az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[[].id, [].appId]' --output tsv
 
+if (!$?) {
+    Write-Error -Message "Error while trying to check if an app registration with the following name already exists: $azureDeploymentAppRegistrationName" -ErrorAction Stop
+}
+
 if ([string]::IsNullOrEmpty($azureDeploymentAppRegistrationListResult)) {
     Write-Verbose "No '$azureDeploymentAppRegistrationName' app registration found. Creating app registration..."
     $azureDeploymentAppRegistrationCreationResult = az ad app create --display-name $azureDeploymentAppRegistrationName --query '[id, appId]' --output tsv
+
+    if (!$?) {
+        Write-Error -Message "Error while trying to create the following app registration: $azureDeploymentAppRegistrationName" -ErrorAction Stop
+    }
+
     $azureDeploymentAppRegistrationId = $azureDeploymentAppRegistrationCreationResult[1]
     Write-Verbose "👍🏼 '$azureDeploymentAppRegistrationName' app registration created!"
 } else {
@@ -221,9 +247,18 @@ if ([string]::IsNullOrEmpty($azureDeploymentAppRegistrationListResult)) {
 Write-Verbose "Checking if a '$azureDeploymentAppRegistrationName' service principal already exist..."
 $azureDeploymentServicePrincipalId = az ad sp list --filter "appId eq '$azureDeploymentAppRegistrationId'" --query [].id --output tsv
 
+if (!$?) {
+    Write-Error -Message "Error while trying to check if a service principal exists for the following app registration: $azureDeploymentAppRegistrationName" -ErrorAction Stop
+}
+
 if ([string]::IsNullOrEmpty($azureDeploymentServicePrincipalId)) {
     Write-Verbose "No '$azureDeploymentAppRegistrationName' service principal found. Creating service principal..."
     $azureDeploymentServicePrincipalId = az ad sp create --id $azureDeploymentAppRegistrationId --query id --output tsv
+
+    if (!$?) {
+        Write-Error -Message "Error while trying to create a service principal for the following app registration: $azureDeploymentAppRegistrationName" -ErrorAction Stop
+    }
+
     Write-Verbose "👍🏼 '$azureDeploymentAppRegistrationName' service principal created!"
 } else {
     Write-Verbose "Existing '$azureDeploymentAppRegistrationName' service principal found."
@@ -234,12 +269,22 @@ Write-Verbose "Role assignments creation for the '$azureDeploymentAppRegistratio
 foreach ($roleToAssignOnAzureSubscription in $rolesToAssignOnAzureSubscription) {
     Write-Verbose "Creation of an assignment for the role '$roleToAssignOnAzureSubscription'..."
     $roleAssignmentCreationResult = az role assignment create --subscription $azureDefaultEnvironmentSubscriptionId --role $roleToAssignOnAzureSubscription --assignee-object-id $azureDeploymentServicePrincipalId --assignee-principal-type ServicePrincipal
+
+    if (!$?) {
+        Write-Error -Message "Error while trying to assign the '$roleToAssignOnAzureSubscription' role to the '$azureDeploymentAppRegistrationName' service principal on the '$azureDefaultEnvironmentSubscriptionDisplayName' Azure subscription." -ErrorAction Stop
+    }
+
     Write-Verbose "👍🏼 '$roleToAssignOnAzureSubscription' role has been assigned!"
 }
 
 # Add service principal name as an environment variable to the default environment
 Write-Verbose "Add service principal name to the '.env' file of the default environment..."
 azd env set AZURE_SERVICE_PRINCIPAL_NAME $azureDeploymentAppRegistrationName
+
+if (!$?) {
+    Write-Error -Message "Error while trying to set the value of the 'AZURE_SERVICE_PRINCIPAL_NAME' environment variable to '$azureDeploymentAppRegistrationName'." -ErrorAction Stop
+}
+
 Write-Verbose "👍🏼 Service principal name added to the '.env' file of the default environment!"
 
 #endregion Create a service principal to manage the solution deployment to the considered Azure subscription
@@ -257,8 +302,13 @@ if ([string]::IsNullOrWhiteSpace($response)) {
 if (!($response.ToLower() -eq "y")) {
     Write-Host "Connection to Azure CLI with the account you want to use for this operation..."
     $azureCliLoginResult = az login --use-device-code --allow-no-subscriptions
-    $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
-    $azureSignedInUserMail = $azureSignedInUser[1]
+    
+    try {
+        $azureSignedInUser = az ad signed-in-user show --query '[id, mail]' --output tsv
+        $azureSignedInUserMail = $azureSignedInUser[1]
+    } catch {
+        Write-Error -Message "Error while trying to get the email of the user connected to Azure CLI." -ErrorAction Stop
+    }
 }
 
 # Check if an app registration with the same name exists, if not create one
@@ -267,9 +317,18 @@ $dataverseAppRegistrationName = "sp-$azureDefaultEnvironmentName-dataverse"
 Write-Verbose "Checking if an '$dataverseAppRegistrationName' app registration already exist..."
 $dataverseAppRegistrationListResult = az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query '[[].id, [].appId]' --output tsv
 
+if (!$?) {
+    Write-Error -Message "Error while trying to check if an app registration with the following name already exists: $dataverseAppRegistrationName" -ErrorAction Stop
+}
+
 if ([string]::IsNullOrEmpty($dataverseAppRegistrationListResult)) {
     Write-Verbose "No '$dataverseAppRegistrationName' app registration found. Creating app registration..."
     $dataverseAppRegistrationCreationResult = az ad app create --display-name $dataverseAppRegistrationName --query '[id, appId]' --output tsv
+
+    if (!$?) {
+        Write-Error -Message "Error while trying to create the following app registration: $dataverseAppRegistrationName" -ErrorAction Stop
+    }
+
     $dataverseAppRegistrationId = $dataverseAppRegistrationCreationResult[1]
     Write-Verbose "👍🏼 '$dataverseAppRegistrationName' app registration created!"
 } else {
@@ -281,9 +340,18 @@ if ([string]::IsNullOrEmpty($dataverseAppRegistrationListResult)) {
 Write-Verbose "Checking if a '$dataverseAppRegistrationName' service principal already exist..."
 $dataverseServicePrincipalId = az ad sp list --filter "appId eq '$dataverseAppRegistrationId'" --query [].id --output tsv
 
+if (!$?) {
+    Write-Error -Message "Error while trying to check if a service principal exists for the following app registration: $dataverseAppRegistrationName" -ErrorAction Stop
+}
+
 if ([string]::IsNullOrEmpty($dataverseServicePrincipalId)) {
     Write-Verbose "No '$dataverseAppRegistrationName' service principal found. Creating service principal..."
     $dataverseServicePrincipalId = az ad sp create --id $dataverseAppRegistrationId --query id --output tsv
+
+    if (!$?) {
+        Write-Error -Message "Error while trying to create a service principal for the following app registration: $dataverseAppRegistrationName" -ErrorAction Stop
+    }
+
     Write-Verbose "👍🏼 '$dataverseAppRegistrationName' service principal created!"
 } else {
     Write-Verbose "Existing '$dataverseAppRegistrationName' service principal found."
@@ -292,6 +360,11 @@ if ([string]::IsNullOrEmpty($dataverseServicePrincipalId)) {
 # Reset credential on service principal
 Write-Verbose "Reset credential on the '$dataverseAppRegistrationName' service principal..."
 $dataverseServicePrincipalCredentialResetResult = az ad sp credential reset --id $dataverseAppRegistrationId --display-name "azd - dataverse - $azureDefaultEnvironmentName" | ConvertFrom-Json
+
+if (!$?) {
+    Write-Error -Message "Error while trying to reset credential on the following service principal: $dataverseAppRegistrationName" -ErrorAction Stop
+}
+
 $dataverseServicePrincipalPassword = $dataverseServicePrincipalCredentialResetResult.password
 
 if (![string]::IsNullOrEmpty($dataverseServicePrincipalPassword)) {
@@ -303,16 +376,31 @@ if (![string]::IsNullOrEmpty($dataverseServicePrincipalPassword)) {
 # Add application registration name as an environment variable to the default environment
 Write-Verbose "Add application registration name to the '.env' file of the default environment..."
 azd env set DATAVERSE_SERVICE_PRINCIPAL_NAME $dataverseAppRegistrationName
+
+if (!$?) {
+    Write-Error -Message "Error while trying to set the value of the 'DATAVERSE_SERVICE_PRINCIPAL_NAME' environment variable to '$dataverseAppRegistrationName'." -ErrorAction Stop
+}
+
 Write-Verbose "👍🏼 Application registration name added to the '.env' file of the default environment!"
 
 # Add application registration id as an environment variable to the default environment
 Write-Verbose "Add application registration id to the '.env' file of the default environment..."
 azd env set DATAVERSE_CLIENT_ID $dataverseAppRegistrationId
+
+if (!$?) {
+    Write-Error -Message "Error while trying to set the value of the 'DATAVERSE_CLIENT_ID' environment variable to '$dataverseAppRegistrationId'." -ErrorAction Stop
+}
+
 Write-Verbose "👍🏼 Application registration id added to the '.env' file of the default environment!"
 
 # Add service principal password as an environment variable to the default environment
 Write-Verbose "Add service principal password to the '.env' file of the default environment..."
 azd env set DATAVERSE_CLIENT_SECRET $dataverseServicePrincipalPassword
+
+if (!$?) {
+    Write-Error -Message "Error while trying to set the value of the 'DATAVERSE_CLIENT_SECRET' environment variable to '$dataverseServicePrincipalPassword'." -ErrorAction Stop
+}
+
 Write-Verbose "👍🏼 Service principal password added to the '.env' file of the default environment!"
 
 #endregion Create a service principal to be assigned as an application user to the considered Dataverse environment
@@ -327,8 +415,7 @@ $response = Read-Host "Please, enter the URL of the Dataverse environment to con
 if ([string]::IsNullOrEmpty($response)) {
     # Test the path provided to the file with the configurations
     Write-Verbose "Test the path provided to the file with the configuration: $dataverseEnvironmentConfigurationFilePath"
-    $testPathResult = Test-Path $dataverseEnvironmentConfigurationFilePath
-    if(!$testPathResult) {
+    if (!(Test-Path $dataverseEnvironmentConfigurationFilePath)) {
         Write-Error -Message "Following path to configuration file not valid: $dataverseEnvironmentConfigurationFilePath" -ErrorAction Stop
     }
     
@@ -364,14 +451,12 @@ if ([string]::IsNullOrEmpty($response)) {
         
         $dataverseEnvironmentCreationResult = pac admin create --name "$dataverseEnvironmentName" --domain "$dataverseEnvironmentDomain" --type "$dataverseEnvironmentType" --region "$dataverseEnvironmentRegion" --language "$dataverseEnvironmentLanguage" --currency "$dataverseEnvironmentCurrency"
 
+        if (!$?) {
+            Write-Error -Message "Error while trying to create the following Power Platform environment: $dataverseEnvironmentName ($dataverseEnvironmentDomain)" -ErrorAction Stop
+        }
+
         $dataverseEnvironmentCreationResultLineWithUrlSplitted = $dataverseEnvironmentCreationResult[5].split(" ")
         $dataverseEnvironmentUrl = $dataverseEnvironmentCreationResultLineWithUrlSplitted[0]
-
-        # Catch potential error in the creation of the Power Platform environment
-        if ($dataverseEnvironmentUrl.Contains("Error")) {
-            $dataverseEnvironmentCreationResult
-            Write-Error -Message "Error in Power Platform environment creation." -ErrorAction Stop
-        }
     }
 } else {
     $dataverseEnvironmentUrl = $response
@@ -380,6 +465,11 @@ if ([string]::IsNullOrEmpty($response)) {
 # Add Dataverse environment URL as an environment variable to the default environment
 Write-Verbose "Add Dataverse environment URL to the '.env' file of the default environment..."
 azd env set DATAVERSE_ENV_URL $dataverseEnvironmentUrl
+
+if (!$?) {
+    Write-Error -Message "Error while trying to set the value of the 'DATAVERSE_ENV_URL' environment variable to '$dataverseEnvironmentUrl'." -ErrorAction Stop
+}
+
 Write-Verbose "👍🏼 Dataverse environment URL added to the '.env' file of the default environment!"
 
 #endregion Get Dataverse environment URL
@@ -389,12 +479,8 @@ Write-Verbose "👍🏼 Dataverse environment URL added to the '.env' file of th
 Write-Verbose "Assign '$dataverseAppRegistrationName' app registration to '$dataverseEnvironmentUrl' Dataverse environment"
 $appUserAssignmentResult = pac admin assign-user --environment "$dataverseEnvironmentUrl" --user "$dataverseAppRegistrationId" --role "$dataverseSecurityRoleNameForApplicationUser" --application-user --async
 
-$appUserAssignmentResultFocus = $appUserAssignmentResult[3]
-
-# Catch potential error in the assignation of the service principal to the Power Platform environment
-if ($appUserAssignmentResultFocus.Contains("Error")) {
-    $appUserAssignmentResult
-    Write-Error -Message "Error in app registration assignment to Dataverse environment." -ErrorAction Stop
+if (!$?) {
+    Write-Error -Message "Error while trying to assign the '$dataverseAppRegistrationName' service principal as '$dataverseSecurityRoleNameForApplicationUser' in the following Power Platform environment: $dataverseEnvironmentUrl" -ErrorAction Stop
 }
 
 Write-Verbose "👍🏼 App registration assigned to Dataverse environment!"
