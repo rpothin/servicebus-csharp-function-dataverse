@@ -78,6 +78,9 @@ if ($?) {
 
 #region Validate the connections
 
+# Azure Developer CLI - Authentication delegated to Azure CLI
+azd config set auth.useAzCliAuth true
+
 # Azure CLI
 Write-Verbose "Checking Azure CLI connection status..."
 $azureSignedInUserMail = ""
@@ -101,6 +104,16 @@ if ([string]::IsNullOrEmpty($azureSignedInUserMail)) {
 }
 
 Write-Verbose "👍🏼 Connected to Azure CLI!"
+
+# Azure Developer CLI - Check connection status
+Write-Verbose "Checking Azure Developer CLI connection status..."
+$azdLoginCheckStatusResult = azd login --check-status
+
+if ($azdLoginCheckStatusResult -eq "Logged in to Azure.") {
+    Write-Verbose "👍🏼 Connected to Azure Developer CLI!"
+} else {
+    Write-Error -Message "No user connected to Azure Developer CLI." -ErrorAction Stop
+}
 
 # Power Platform CLI
 Write-Verbose "Checking Power Platform CLI connection status..."
@@ -226,10 +239,10 @@ if (!($response.ToLower() -eq "y")) {
 $azureDeploymentAppRegistrationName = "sp-$azureDefaultEnvironmentName-azure"
 
 Write-Verbose "Checking if an '$azureDeploymentAppRegistrationName' app registration already exist..."
-$azureDeploymentAppRegistrationListResult = az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[[].id, [].appId]' --output tsv
+$azureDeploymentAppRegistrationListResult = az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[].{id:id, appId:appId}' --output tsv
 
 if (!$?) {
-    az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[[].id, [].appId]' --output tsv
+    az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[].{id:id, appId:appId}' --output tsv
     Write-Error -Message "Error while trying to check if an app registration with the following name already exists: $azureDeploymentAppRegistrationName" -ErrorAction Stop
 }
 
@@ -324,10 +337,10 @@ if (!($response.ToLower() -eq "y")) {
 $dataverseAppRegistrationName = "sp-$azureDefaultEnvironmentName-dataverse"
 
 Write-Verbose "Checking if an '$dataverseAppRegistrationName' app registration already exist..."
-$dataverseAppRegistrationListResult = az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query '[[].id, [].appId]' --output tsv
+$dataverseAppRegistrationListResult = az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query '[].{id:id, appId:appId}' --output tsv
 
 if (!$?) {
-    az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query '[[].id, [].appId]' --output tsv
+    az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query '[].{id:id, appId:appId}' --output tsv
     Write-Error -Message "Error while trying to check if an app registration with the following name already exists: $dataverseAppRegistrationName" -ErrorAction Stop
 }
 
