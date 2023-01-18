@@ -77,6 +77,9 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   name: functionAppName
   location: location
   kind: 'functionapp'
+  tags: {
+    'azd-service-name': 'app'
+  }
   identity: {
     type: 'SystemAssigned'
   }
