@@ -94,6 +94,12 @@ An account with:
 
 The fastest way for you to get this application up and running on Azure is to follow the procedure below.
 
+> **Note**
+> In GitHub there is even a easier way than the one below:
+> - From the [rpothin/servicebus-csharp-function-dataverse](https://github.com/rpothin/servicebus-csharp-function-dataverse) GitHub repository, click on the **Use this template** button
+> - Select the **Open in a codespace** option
+> - Go directly to the step 3 of this section
+
 1. Open a terminal, create a new empty folder, and change into it
 2. Run the following command to initialize the project
 
