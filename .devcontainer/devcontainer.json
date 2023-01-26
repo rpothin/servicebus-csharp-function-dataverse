@@ -8,9 +8,7 @@
     },
     "features": {
         "github-cli": "latest",
-        "azure-cli": "latest",
-        "powershell": "latest",
-        "docker-from-docker": "20.10"
+        "azure-cli": "latest"
     },
     "extensions": [
         "ms-azuretools.azure-dev",
