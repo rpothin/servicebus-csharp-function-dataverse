@@ -92,6 +92,8 @@ An account with:
 
 ### Quickstart
 
+[Event driven architecture with Dataverse and Azure using Azure Developer CLI (part 1)](https://youtu.be/rcVtA19GyeU)
+
 The fastest way for you to get this application up and running on Azure is to follow the procedure below.
 
 > **Note**
