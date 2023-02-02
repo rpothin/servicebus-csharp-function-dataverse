@@ -244,6 +244,11 @@ graph TB
         sbTrigger
     end
 
+    subgraph Service Bus
+        sb(Queue)
+        sb-->|On message add|sbTrigger(Queue Trigger)
+    end
+
 ```
 
 ## ❗ Code of Conduct
