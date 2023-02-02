@@ -249,6 +249,13 @@ graph TB
         sb-->|On message add|sbTrigger(Queue Trigger)
     end
 
+    subgraph Azure Monitor
+        ai(application Insights)
+        la(Log Analytics workspace)
+        sbTrigger-->|Message and logged in user id|ai
+        ai-->la
+    end
+
 ```
 
 ## ❗ Code of Conduct
