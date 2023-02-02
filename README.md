@@ -244,23 +244,6 @@ graph TB
         sbTrigger
     end
 
-    subgraph Service Bus
-        sb(Queue)
-        sb-->|On message add|sbTrigger(Queue Trigger)
-    end
-
-    subgraph Azure Monitor
-        ai(application Insights)
-        la(Log Analytics workspace)
-        sbTrigger-->|Message and logged in user id|ai
-        ai-->la
-    end
-
-    subgraph Power Platform
-        dataverse(Dataverse)
-        sbTrigger-->|Get logged in user details|dataverse
-    end
-
 ```
 
 ## ❗ Code of Conduct
