@@ -256,6 +256,11 @@ graph TB
         ai-->la
     end
 
+    subgraph Power Platform
+        dataverse(Dataverse)
+        sbTrigger-->|Get logged in user details|dataverse
+    end
+
 ```
 
 ## ❗ Code of Conduct
