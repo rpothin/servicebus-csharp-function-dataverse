@@ -239,10 +239,10 @@ if (!($response.ToLower() -eq "y")) {
 $azureDeploymentAppRegistrationName = "sp-$azureDefaultEnvironmentName-azure"
 
 Write-Verbose "Checking if an '$azureDeploymentAppRegistrationName' app registration already exist..."
-$azureDeploymentAppRegistrationListResult = az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[].{id:id, appId:appId}' --output tsv
+$azureDeploymentAppRegistrationListResult = az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[].{id:id, appId:appId}' --output json | ConvertFrom-Json
 
 if (!$?) {
-    az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[].{id:id, appId:appId}' --output tsv
+    az ad app list --filter "displayName eq '$azureDeploymentAppRegistrationName'" --query '[].{id:id, appId:appId}' --output json | ConvertFrom-Json
     Write-Error -Message "Error while trying to check if an app registration with the following name already exists: $azureDeploymentAppRegistrationName" -ErrorAction Stop
 }
 
@@ -258,7 +258,7 @@ if ([string]::IsNullOrEmpty($azureDeploymentAppRegistrationListResult)) {
     $azureDeploymentAppRegistrationId = $azureDeploymentAppRegistrationCreationResult[1]
     Write-Verbose "👍🏼 '$azureDeploymentAppRegistrationName' app registration created!"
 } else {
-    $azureDeploymentAppRegistrationId = $azureDeploymentAppRegistrationListResult[1]
+    $azureDeploymentAppRegistrationId = $azureDeploymentAppRegistrationListResult.appId
     Write-Verbose "Existing '$azureDeploymentAppRegistrationName' app registration found."
 }
 
@@ -337,10 +337,10 @@ if (!($response.ToLower() -eq "y")) {
 $dataverseAppRegistrationName = "sp-$azureDefaultEnvironmentName-dataverse"
 
 Write-Verbose "Checking if an '$dataverseAppRegistrationName' app registration already exist..."
-$dataverseAppRegistrationListResult = az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query '[].{id:id, appId:appId}' --output tsv
+$dataverseAppRegistrationListResult = az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query '[].{id:id, appId:appId}' --output json | ConvertFrom-Json
 
 if (!$?) {
-    az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query '[].{id:id, appId:appId}' --output tsv
+    az ad app list --filter "displayName eq '$dataverseAppRegistrationName'" --query '[].{id:id, appId:appId}' --output json | ConvertFrom-Json
     Write-Error -Message "Error while trying to check if an app registration with the following name already exists: $dataverseAppRegistrationName" -ErrorAction Stop
 }
 
@@ -356,7 +356,7 @@ if ([string]::IsNullOrEmpty($dataverseAppRegistrationListResult)) {
     $dataverseAppRegistrationId = $dataverseAppRegistrationCreationResult[1]
     Write-Verbose "👍🏼 '$dataverseAppRegistrationName' app registration created!"
 } else {
-    $dataverseAppRegistrationId = $dataverseAppRegistrationListResult[1]
+    $dataverseAppRegistrationId = $dataverseAppRegistrationListResult.appId
     Write-Verbose "Existing '$dataverseAppRegistrationName' app registration found."
 }
 
@@ -399,6 +399,10 @@ if (![string]::IsNullOrEmpty($dataverseServicePrincipalPassword)) {
 } else {
     Write-Error -Message "Error during credendial reset for the '$dataverseAppRegistrationName' service principal." -ErrorAction Stop
 }
+
+# Run 'azd login' to be able to add new environment variable to env config file
+Write-Host "Run 'azd login' to be able to add new environment variable to env config file - use the Azure account related to the considered subscription" -ForegroundColor Blue
+azd login
 
 # Add application registration name as an environment variable to the default environment
 Write-Verbose "Add application registration name to the '.env' file of the default environment..."
