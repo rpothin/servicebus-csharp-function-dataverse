@@ -11,3 +11,4 @@ To get the URL of an existing Dataverse environment you can follow the process b
 3. Click on the name of the environment you want to use for the test of this solution
 4. In the `Overview` page of the considered environment, copy the `Environment URL`
 
+![Picture1](https://user-images.githubusercontent.com/23240245/218636109-5f6d5c29-52a5-4d8e-9f1a-bf869438b26b.png)
