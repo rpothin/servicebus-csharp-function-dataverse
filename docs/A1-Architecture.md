@@ -18,7 +18,7 @@ graph TB
     end
 
     subgraph Azure Monitor
-        ai(application Insights)
+        ai(Application Insights)
         la(Log Analytics workspace)
         sbTrigger-->|2. Message and logged in user id|ai
         ai-->la
