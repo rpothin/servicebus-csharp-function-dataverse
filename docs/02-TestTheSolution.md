@@ -35,4 +35,4 @@ In both places above you should see the traces below:
 
 ![image](https://user-images.githubusercontent.com/23240245/206925481-dbff2ad3-17f6-4ff6-b852-b2da97f005cc.png)
 
-If you find the documented traces it means the solution provided in this template is working.
+If you find the documented traces it means the solution provided in this template is working as expected.
