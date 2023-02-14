@@ -20,13 +20,13 @@ graph TB
     subgraph Azure Monitor
         ai(application Insights)
         la(Log Analytics workspace)
-        sbTrigger-->|Message and logged in user id|ai
+        sbTrigger-->|2. Message and logged in user id|ai
         ai-->la
     end
 
     subgraph Power Platform
         dataverse(Dataverse)
-        sbTrigger-->|Get logged in user details|dataverse
+        sbTrigger-->|1. Get logged in user details|dataverse
     end
 
 ```
