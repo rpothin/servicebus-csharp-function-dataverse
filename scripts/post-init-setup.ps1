@@ -78,9 +78,6 @@ if ($?) {
 
 #region Validate the connections
 
-# Azure Developer CLI - Authentication delegated to Azure CLI
-azd config set auth.useAzCliAuth true
-
 # Azure CLI
 Write-Verbose "Checking Azure CLI connection status..."
 $azureSignedInUserMail = ""
@@ -105,14 +102,20 @@ if ([string]::IsNullOrEmpty($azureSignedInUserMail)) {
 
 Write-Verbose "👍🏼 Connected to Azure CLI!"
 
-# Azure Developer CLI - Check connection status
+# Azure Developer CLI
 Write-Verbose "Checking Azure Developer CLI connection status..."
 $azdLoginCheckStatusResult = azd login --check-status
 
 if ($azdLoginCheckStatusResult -eq "Logged in to Azure.") {
     Write-Verbose "👍🏼 Connected to Azure Developer CLI!"
 } else {
-    Write-Error -Message "No user connected to Azure Developer CLI." -ErrorAction Stop
+    Write-Host "No signed in user found for Azure Developer CLI. Please login..." -ForegroundColor Blue
+    
+    try {
+        azd login --use-device-code
+    } catch {
+        Write-Error -Message "No user connected to Azure Developer CLI." -ErrorAction Stop
+    }
 }
 
 # Power Platform CLI
@@ -399,10 +402,6 @@ if (![string]::IsNullOrEmpty($dataverseServicePrincipalPassword)) {
 } else {
     Write-Error -Message "Error during credendial reset for the '$dataverseAppRegistrationName' service principal." -ErrorAction Stop
 }
-
-# Run 'azd login' to be able to add new environment variable to env config file
-Write-Host "Run 'azd login' to be able to add new environment variable to env config file - use the Azure account related to the considered subscription" -ForegroundColor Blue
-azd login
 
 # Add application registration name as an environment variable to the default environment
 Write-Verbose "Add application registration name to the '.env' file of the default environment..."
