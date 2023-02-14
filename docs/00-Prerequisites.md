@@ -4,6 +4,8 @@
     </h1>
 </p>
 
+## Tools
+
 > **Note**
 > If you plan to use a devcontainer definiton, like for [GitHub Codespaces](https://github.com/features/codespaces), the one included in this repository contains all the things you will need to start working with this template.
 
