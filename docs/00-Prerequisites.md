@@ -34,7 +34,7 @@ curl -fsSL https://aka.ms/install-azd.sh | bash
 
 An account with:
 - access to an active Azure subscription (_you can [create one for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F) if you don't have one yet_)
-- the permission to create an application registrations in Azure AD (*for the management of the Azure deployment from GitHub*)
+- the permission to create an application registration in Azure AD (*for the management of the Azure deployment from GitHub*)
 
 > **Note**
 > To be able to configure the solution you will need at least the roles below on the considered Azure subscription:
@@ -44,11 +44,11 @@ An account with:
 ## Power Platform
 
 An account with:
-- access to an existing Power Platform environment as an administrator **or** the permission to create a new Power Platform environment
-- the permission to create an application registrations in Azure AD (*for the communication from the Azure Functions application to the Power Platform environment*)
+- access to an existing Power Platform environment as a `System Administrator` **or** the permission to create a new Power Platform environment
+- the permission to create an application registration in Azure AD (*for the communication from the Azure Functions application to the Power Platform environment*)
 
 > **Note**
 > To explore the Power Platform part of this template you can use one of the following free ways:
-> - [Power Apps Developer Plan](https://powerapps.microsoft.com/en-us/developerplan/)
+> - [Power Apps Developer Plan](https://learn.microsoft.com/en-us/power-apps/maker/developer-plan)
 > - [Microsoft 365 Developer Program](https://developer.microsoft.com/en-us/microsoft-365/dev-program)
 > - [Dynamics 365 Free Trial](https://dynamics.microsoft.com/en-us/dynamics-365-free-trial/)
