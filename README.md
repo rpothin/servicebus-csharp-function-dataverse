@@ -52,6 +52,7 @@ It contains components (infrastructure as code in Bicep, C# Azure Functions appl
 
 - [Architecture of the solution](./docs/A1-Architecture.md)
 - [Custom environment variables](./docs/A2-CustomEnvironmentVariables.md)
+- [Get the URL of a Dataverse environment](./docs/A3-GetDataverseEnvironmentUrl.md)
 
 ## ❗ Code of Conduct
 
