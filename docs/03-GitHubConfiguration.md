@@ -53,6 +53,7 @@ gh secret set <secret name>
 
 > **Note**
 > Now you can run again the `azd pipeline config --auth-type federated --principal-name <service principal name>` command (*ran in the previous section*) to trigger the configured GitHub workflow.
+> ⚠ Currently it seems this will not work from GitHub Codespaces. You could get the following error: `ERROR: git push: commit changes: failed to commit: exit code: 128, stdout: , stderr: error: gpg failed to sign the data fatal: failed to write commit object : exit status 128`
 > Another option to triggered the configured GitHub workflow is to push a change in the `azure.yaml` file or any of the files under the following folders: `infra` or `src`
 
 ---
