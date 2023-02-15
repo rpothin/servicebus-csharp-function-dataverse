@@ -53,10 +53,10 @@ An account with:
 > - [Microsoft 365 Developer Program](https://developer.microsoft.com/en-us/microsoft-365/dev-program)
 > - [Dynamics 365 Free Trial](https://dynamics.microsoft.com/en-us/dynamics-365-free-trial/)
 
+<br>
+
 ---
 
-<p align="center">
-    <h2 align="center" href="../README.md#📖-documentation">
-        🏡 README - Documentation
-    </h2>
-</p>
+<br>
+
+### [🏡 README - Documentation](../README.md#📖-documentation)
