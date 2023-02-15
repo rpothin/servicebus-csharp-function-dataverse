@@ -14,3 +14,7 @@
 | DATAVERSE_CLIENT_SECRET          | Secret of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment configured in the Key Vault during Azure infrastructure deployment for the communication from the Azure Functions application to the Power Platform / Dataverse environment    |
 | AZURE_SERVICE_PRINCIPAL_NAME     | Name of the application registration / service principal to manage Azure deployment from GitHub                                                                                                                                                                                                                                            |
 | DATAVERSE_SERVICE_PRINCIPAL_NAME | Name of the application registration / service principal to manage the communication from the Azure Functions application to the Power Platform / Dataverse environment                                                                                                                                                                    |
+
+---
+
+### [🏡 README - Documentation](../README.md#📖-documentation)

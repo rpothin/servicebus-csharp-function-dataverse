@@ -62,3 +62,7 @@ When `azd up` is complete it will output the following URLs:
 
 - Azure Portal link to view resources
 - Azure Functions application
+
+---
+
+### [🏡 README - Documentation](../README.md#📖-documentation)

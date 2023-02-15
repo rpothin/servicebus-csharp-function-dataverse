@@ -46,3 +46,7 @@ In your workspace linked to a GitHub repository execute the command below:
 ```powershell
 azd pipeline config --auth-type federated --principal-name <service principal name>
 ```
+
+---
+
+### [🏡 README - Documentation](../README.md#📖-documentation)
