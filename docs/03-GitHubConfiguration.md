@@ -26,7 +26,8 @@ azd pipeline config --auth-type federated --principal-name <service principal na
 ```
 
 > **Note**
-> If you are in GitHub Codespaces you could get an error like the following one: `Error: failed setting AZURE_CREDENTIALS secret: failed running gh secret set exit code: 1, stdout: , stderr: failed to fetch public key: HTTP 403: Resource not accessible by integration (https://api.github.com/repos/savannahostrowski/codespaces-test/actions/secrets/public-key)
+> If you are in GitHub Codespaces the execution of the command above could run longer than expected.
+> In that case, you could be facing an error like the following one running a command like `gh secret set test`: `Error: failed setting AZURE_CREDENTIALS secret: failed running gh secret set exit code: 1, stdout: , stderr: failed to fetch public key: HTTP 403: Resource not accessible by integration (https://api.github.com/repos/savannahostrowski/codespaces-test/actions/secrets/public-key)
 : exit status 1`
 > As a workaround, you can run the following commands in the Terminal:
 > - `export GITHUB_TOKEN=` to unset GITHUB_TOKEN
