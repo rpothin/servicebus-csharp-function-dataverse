@@ -65,4 +65,4 @@ When `azd up` is complete it will output the following URLs:
 
 ---
 
-### [🏡 README - Documentation](../README.md#📖-documentation)
+### [🏡 README - Documentation](../README.md#-documentation)

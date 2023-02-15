@@ -49,4 +49,4 @@ azd pipeline config --auth-type federated --principal-name <service principal na
 
 ---
 
-### [🏡 README - Documentation](../README.md#📖-documentation)
+### [🏡 README - Documentation](../README.md#-documentation)

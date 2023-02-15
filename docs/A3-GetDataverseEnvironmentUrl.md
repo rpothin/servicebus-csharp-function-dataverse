@@ -15,4 +15,4 @@ To get the URL of an existing Dataverse environment you can follow the process b
 
 ---
 
-### [🏡 README - Documentation](../README.md#📖-documentation)
+### [🏡 README - Documentation](../README.md#-documentation)
