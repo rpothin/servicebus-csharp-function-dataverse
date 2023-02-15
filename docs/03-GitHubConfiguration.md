@@ -25,6 +25,9 @@ In your workspace linked to a GitHub repository execute the command below:
 azd pipeline config --auth-type federated --principal-name <service principal name>
 ```
 
+> **Warning**
+> At this point, you should not answer `Yes` to the following question after running the previous command, because there are still missing secrets in your GitHub repository: **Would you like to commit and push your local changes to start the configured CI pipeline?**
+
 > **Note**
 > If you are in GitHub Codespaces the execution of the command above could run longer than expected.
 > In that case, you could be facing an error like the following one running a command like `gh secret set test`: `Error: failed setting AZURE_CREDENTIALS secret: failed running gh secret set exit code: 1, stdout: , stderr: failed to fetch public key: HTTP 403: Resource not accessible by integration (https://api.github.com/repos/savannahostrowski/codespaces-test/actions/secrets/public-key)
