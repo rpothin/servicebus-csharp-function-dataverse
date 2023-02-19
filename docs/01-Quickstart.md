@@ -43,7 +43,7 @@ pwsh scripts/post-init-setup.ps1
 > This PowerShell script will:
 > - create an application registration in Azure AD for the Azure deployment from GitHub
 > - create an application registration in Azure AD for the communication from the Azure Functions application to the Power Platform / Dataverse environment
-> - prompt for the URL of a Dataverse environment (*[guide to get it](./A3-GetDataverseEnvironmentUrl.md)*) or offer to create one based on the element in the [Dataverse environment configuration](./.dataverse/environment-configuration.json) file
+> - prompt for the URL of a Dataverse environment (*[guide to get it](./A3-GetDataverseEnvironmentUrl.md)*) or offer to create one based on the element in the [Dataverse environment configuration](../.dataverse/environment-configuration.json) file
 > - register the second application registration created in Azure AD as an application user in the considered Power Platform / Dataverse environment with the `Service Reader` security role
 
 4. Run the following command to provision Azure resources, and deploy the application code

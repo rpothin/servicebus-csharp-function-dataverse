@@ -6,7 +6,7 @@
 
 [![Watch test demonstration](https://i3.ytimg.com/vi/FkhUpgTQiUY/maxresdefault.jpg)](https://youtu.be/FkhUpgTQiUY)
 
-To test the solution, you can manually push a message in the `dataverse-inbound` queue (_configured in the [**main.parameters.json**](./infra/main.parameters.json) file_) - for example, you can do it directly from the queue in Azure Portal using the [**Service Bus Explorer**](https://learn.microsoft.com/en-us/azure/service-bus-messaging/explorer) feature.
+To test the solution, you can manually push a message in the `dataverse-inbound` queue (_configured in the [**main.parameters.json**](../infra/main.parameters.json) file_) - for example, you can do it directly from the queue in Azure Portal using the [**Service Bus Explorer**](https://learn.microsoft.com/en-us/azure/service-bus-messaging/explorer) feature.
 
 ![image](https://user-images.githubusercontent.com/23240245/206925350-67e9676f-9048-4fe3-9d91-56c581e3e498.png)
 

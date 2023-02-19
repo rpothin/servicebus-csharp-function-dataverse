@@ -17,7 +17,7 @@ Follow the steps below to configure the elements required to run the GitHub work
 > - [User Access Administrator](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) - _for the configuration of the access of the Azure Functions application to the Azure Service Bus_
 
 > **Note**
-> If you ran the [**post-init-setup**](./scripts/post-init-setup.ps1) PowerShell script, you can considered the value of the `AZURE_SERVICE_PRINCIPAL_NAME` environment variable.
+> If you ran the [**post-init-setup**](../scripts/post-init-setup.ps1) PowerShell script, you can considered the value of the `AZURE_SERVICE_PRINCIPAL_NAME` environment variable.
 
 In your workspace linked to a GitHub repository execute the command below:
 
