@@ -52,9 +52,7 @@ gh secret set <secret name>
 | DATAVERSE_CLIENT_SECRET | Secret of the Azure AD application registration configured as an application user with permissions in the considered Dataverse / Power Platform environment configured in the Key Vault during Azure infrastructure deployment for the communication from the Azure Functions application to the Power Platform / Dataverse environment    |
 
 > **Note**
-> Now you can run again the `azd pipeline config --auth-type federated --principal-name <service principal name>` command (*ran in the previous section*) to trigger the configured GitHub workflow.
-> ⚠ Currently it seems this will not work from GitHub Codespaces. You could get the following error: `ERROR: git push: commit changes: failed to commit: exit code: 128, stdout: , stderr: error: gpg failed to sign the data fatal: failed to write commit object : exit status 128`
-> Another option to triggered the configured GitHub workflow is to push a change in the `azure.yaml` file or any of the files under the following folders: `infra` or `src`
+> To trigger the configured GitHub workflow you can run it manually from GitHub or push a change in the `azure.yaml` file or any of the files under the following folders: `infra` or `src`.
 
 ---
 
