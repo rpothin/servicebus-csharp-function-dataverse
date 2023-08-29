@@ -39,6 +39,8 @@ on:
       - '!LICENSE'
       - '!README.md'
 
+# Set up permissions for deploying with secretless Azure federated credentials
+# https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
 permissions:
       id-token: write
       contents: read
@@ -46,8 +48,7 @@ permissions:
 jobs:
   provision-deploy:
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/azure-dev-cli-apps:latest
+    environment: dev
     env:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -56,6 +57,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Install azd
+        uses: Azure/setup-azd@v0.1.0
 
       - name: Delegate azd auth to az
         run: azd config set auth.useAzCliAuth true
