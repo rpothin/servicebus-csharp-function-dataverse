@@ -22,6 +22,17 @@ All notable changes to this repository will be documented in this file.
 
 - ... -->
 
+## [0.1.1] - 2023-08-28
+
+### 🤖 Changed
+
+- [Devcontainer definition](./.devcontainer/devcontainer.json) updated:
+   - image specification format
+   - **ghcr.io/azure/azure-dev/azd:latest** feature added
+- [provision-deploy](./.github/workflows/provision-deploy.yml) GitHub workflow updated:
+   - container definition removed
+   - azd installation step added
+
 ## [0.1.0] - 2023-02-04
 
 > Initialize this repository template to enable Power Platform developers start quickly with event driven architecture with Dataverse and Azure 😊
@@ -37,5 +48,6 @@ All notable changes to this repository will be documented in this file.
 - `post-init-setup` PowerShell script to execute after the initialization of the repository to finalize the configuration of the prerequisites to be able to deploy the solution using the `azd up` command
 - `provision-deploy` GitHub workflow to be able to provision the infrastructure in Azure and deploy the Azure Functions app code on push or pull request to `main` branch (*in specific folders*)
 
-[⚒ Work in progress]: https://github.com/rpothin/servicebus-csharp-function-dataverse/compare/v0.1.0...HEAD
+[⚒ Work in progress]: https://github.com/rpothin/servicebus-csharp-function-dataverse/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/rpothin/servicebus-csharp-function-dataverse/releases/tag/v0.1.1
 [0.1.0]: https://github.com/rpothin/servicebus-csharp-function-dataverse/releases/tag/v0.1.0
